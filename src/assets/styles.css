@@ -1,0 +1,110 @@
+html,
+body {
+	height: 100%;
+}
+
+#app {
+	line-height: 1.3;
+}
+
+.pointer-events-none input {
+	pointer-events: none;
+}
+
+.cabinet-sidebar {
+
+}
+
+.cabinet-nav a {
+	color: #a0e9a0;
+}
+
+.cabinet-nav .active {
+	border-right: 5px solid #1abb9c;
+	background: rgba(255, 255, 255, .05);
+}
+
+.loader {
+	position: absolute;
+	z-index: 99;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.loader:before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	opacity: 0.5;
+}
+
+.loader .spinner {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin: -1rem 0 0 -1rem;
+}
+
+.b-custom-control-lg small {
+
+}
+
+.custom-control .custom-control-label {
+	line-height: 1.2 !important;
+}
+
+.table .table-info > th {
+	background: #d1ecf1;
+}
+
+.active-tab {
+	background: linear-gradient(#117a8b, #fff);
+}
+
+.nav-tabs .nav-item .nav-link {
+	font-weight: bold;
+	border-color: #e9ecef #e9ecef #dee2e6;
+}
+.tabs {
+	border: 0;
+}
+.tabs .card-header {
+	padding: 0 0.625rem;
+	background: none;
+	border: 0;
+	border-radius: 0;
+}
+
+.tabs .card-header .card-header-tabs {
+	margin-bottom: 0;
+}
+
+.tabs .tab-content {
+	border: 1px solid rgba(0,0,0,.125);
+	border-radius: 0 0.25rem 0.25rem 0.25rem;
+}
+
+.tabs .nav-tabs .nav-item .nav-link:not(.active) {
+	color: inherit;
+	background: #f8f9fa;
+}
+
+.cabinet-main {
+	margin-left: 0;
+	transition: margin-left .3s ease-in-out;
+}
+
+@media (min-width: 992px) {
+	.cabinet-main.sidebar-open {
+		margin-left: 250px;
+	}
+	.b-sidebar-backdrop {
+		display: none;
+	}
+}

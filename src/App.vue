@@ -1,28 +1,58 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+	<div id="app" class="h-100">
+		<router-view/>
+		<ModalError :error="error" />
+	</div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+	import messages from '@/utils/messages'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+	export default {
+		name: 'App',
+		computed: {
+			error() {
+				return this.$store.getters.error
+			},
+			toast() {
+				return this.$store.getters.toast
+			},
+		},
+		mounted() {
+
+		},
+		watch: {
+			async error(message) {
+				if (!message) {
+					return
+				}
+
+				if (message === 'unauthorized' && !this.$route.path.startsWith('/auth')) {
+					await this.$store.dispatch('logout', 'login')
+					await this.$router.push('/auth')
+					await this.$store.dispatch('clearError')
+				} else {
+					this.$bvModal.show('modal-error')
+				}
+			},
+			toast(message) {
+				if (!message) {
+					return
+				}
+
+				// this.$bvToast.show('toast-info')
+				this.$toast(messages[message] || message)
+				this.$store.dispatch('clearToast')
+			}
+		},
+		components: {
+			'ModalError': require('@/components/ModalError.vue').default
+		},
+	}
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="scss">
+	@import '~bootstrap';
+	@import '~bootstrap-vue';
+	@import 'assets/styles.css';
 </style>
