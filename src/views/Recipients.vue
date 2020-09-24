@@ -1,16 +1,18 @@
 <template>
 	<div>
+		<Loader v-if="loading" />
+
 		<div class="row">
 			<div class="col">
 				<h2 class="mb-4">Получатели</h2>
 			</div>
 			<div class="col-auto">
 				<b-button size="lg" variant="success" @click.prevent="onAddRecipient">
-					<b-icon icon="plus-circle"/> Добавить нового получателя
+					<b-icon icon="plus-circle"/> Добавить получателя
 				</b-button>
 			</div>
 		</div>
-		<Loader v-if="loading" />
+
 		<div class="table-responsive">
 			<table class="table table-bordered">
 				<tr class="table-info">
@@ -59,6 +61,9 @@
 		},
 		async mounted() {
 			this.getRecipients()
+		},
+		beforeDestroy() {
+			this.$store.dispatch('cancelRequest')
 		},
 		methods: {
 			async getRecipients() {

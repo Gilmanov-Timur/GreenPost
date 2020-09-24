@@ -12,6 +12,7 @@ export default {
 	'something-went-wrong': 'Произошла ошибка. Попробуйте обновить страницу или зайти позже.',
 	'logout': 'Вы вышли из системы',
 	'login': 'Требуется авторизация',
+	'register-success': 'Вы успешно зарегистрировались в системе GreenPost!',
 	'auth/user-not-found': 'Пользователь не найден',
 	'auth/wrong-password': 'Неверный пароль',
 	'auth/email-already-in-use': 'Это имя пользователя занято'

@@ -14,7 +14,7 @@
 				:no-close-on-route-change="desktop"
 				v-model="sidebarOpen"
 			>
-				<aside class="cabinet-sidebar py-3">
+				<div class="py-3">
 					<div class="mb-3 text-center">
 						<b-dropdown variant="dark">
 							<template v-slot:button-content>
@@ -22,7 +22,6 @@
 									<b-avatar round />
 								</div>
 								<div class="mb-1 user-name text-white-50">
-									{{ userInfo['Фамилия'] }}
 									{{ userInfo['Имя'] }}
 								</div>
 								<div class="user-id mb-1 text-white">
@@ -52,11 +51,14 @@
 						<b-nav-item to="/packages" active-class="active" exact>
 							<b-icon icon="box"/> ПОСЫЛКИ
 						</b-nav-item>
+						<b-nav-item to="/payments" active-class="active" exact disabled>
+							<b-icon icon="wallet2"/> РАСЧЕТЫ
+						</b-nav-item>
 						<b-nav-item to="/recipients" active-class="active" exact>
 							<b-icon icon="people"/> ПОЛУЧАТЕЛИ
 						</b-nav-item>
 					</b-nav>
-				</aside>
+				</div>
 			</b-sidebar>
 
 			<main id="main" class="cabinet-main" :class="{'sidebar-open': sidebarOpen}">

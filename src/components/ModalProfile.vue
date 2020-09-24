@@ -4,6 +4,7 @@
 		centered
 		scrollable
 		no-close-on-backdrop
+		no-close-on-esc
 		size="lg"
 		header-close-label="Закрыть"
 		title="Профиль"
@@ -133,6 +134,9 @@
 					await this.$store.dispatch('updateUserInfo', {formData, currentPassword: this.form.currentPassword})
 					this.$bvModal.hide('modal-profile')
 					this.$toast('Профиль успешно обновлен!')
+					try {
+						await this.$store.dispatch('getUserInfo')
+					} catch (e) {}
 				} catch (e) {
 					if (e.response && e.response.status === 401) {
 						await this.$store.dispatch('setError', 'incorrect-password')

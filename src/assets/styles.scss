@@ -1,3 +1,5 @@
+@import 'variables';
+
 html,
 body {
 	height: 100%;
@@ -63,36 +65,36 @@ body {
 	background: #d1ecf1;
 }
 
-.active-tab {
-	background: linear-gradient(#117a8b, #fff);
-}
-
-.nav-tabs .nav-item .nav-link {
-	font-weight: bold;
-	border-color: #e9ecef #e9ecef #dee2e6;
-}
 .tabs {
 	border: 0;
-}
-.tabs .card-header {
-	padding: 0 0.625rem;
-	background: none;
-	border: 0;
-	border-radius: 0;
+	.card-header {
+		padding: 0 0.625rem;
+		background: none;
+		border: 0;
+		border-radius: 0;
+		.card-header-tabs {
+			margin-bottom: 0;
+		}
+	}
+	.tab-content {
+		border: 1px solid #dee2e6;
+		border-radius: 0 0.25rem 0.25rem 0.25rem;
+	}
+	.nav-tabs .nav-item .nav-link {
+		font-weight: bold;
+		border-color: #dee2e6;
+		&.active {
+			border-bottom-color: #fff;
+		}
+		&:not(.active) {
+			color: inherit;
+			background: #f8f9fa;
+		}
+	}
 }
 
-.tabs .card-header .card-header-tabs {
-	margin-bottom: 0;
-}
-
-.tabs .tab-content {
-	border: 1px solid rgba(0,0,0,.125);
-	border-radius: 0 0.25rem 0.25rem 0.25rem;
-}
-
-.tabs .nav-tabs .nav-item .nav-link:not(.active) {
-	color: inherit;
-	background: #f8f9fa;
+.order-search-form {
+	max-width: 500px;
 }
 
 .cabinet-main {

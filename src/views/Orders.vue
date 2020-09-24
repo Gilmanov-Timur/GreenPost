@@ -19,14 +19,14 @@
 					<div class="table-responsive">
 						<table class="table table-sm table-bordered">
 							<tr class="table-info">
-								<th class="align-middle">Тип груза</th>
-								<th class="align-middle">Дата</th>
-								<th class="align-middle">Наименование товара</th>
-								<th class="align-middle">Кол-во</th>
-								<th class="align-middle">Ценность</th>
-								<th class="align-middle">Номер отслеживания</th>
-								<th class="align-middle">Комментарий</th>
-								<th width="1" class="align-middle text-nowrap">Услуги</th>
+								<th class="align-middle py-2">Тип груза</th>
+								<th class="align-middle py-2">Дата</th>
+								<th class="align-middle py-2">Наименование товара</th>
+								<th class="align-middle py-2">Кол-во</th>
+								<th class="align-middle py-2">Ценность</th>
+								<th class="align-middle py-2">Номер отслеживания</th>
+								<th class="align-middle py-2">Комментарий</th>
+								<th width="1" class="align-middle py-2 text-nowrap">Услуги</th>
 								<th width="1" />
 							</tr>
 							<tr v-for="order of purchasedOrders" :key="order['Номер']">
@@ -54,15 +54,15 @@
 									</span>
 								</td>
 								<td class="align-middle text-nowrap">
-									<b-button size="sm" variant="primary" class="mx-1" :to="`order-details/${order['Номер']}`">
+									<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}`">
 										<b-icon icon="eye-fill"/>
 									</b-button>
 
-									<b-button size="sm" variant="info" class="mx-1" @click.prevent="() => onEdit(order['Номер'])">
+									<b-button size="sm" variant="info" class="mx-1" :disabled="loading" @click.prevent="() => onEdit(order['Номер'])">
 										<b-icon icon="pencil-square"/>
 									</b-button>
 
-									<b-button size="sm" variant="danger" class="mx-1" @click.prevent="() => onDelete(order['Номер'], order['Посылка'])">
+									<b-button size="sm" variant="danger" class="mx-1" :disabled="loading" @click.prevent="() => onDelete(order['Номер'], order['Посылка'])">
 										<b-icon icon="trash"/>
 									</b-button>
 								</td>
@@ -77,16 +77,16 @@
 					<div class="table-responsive">
 						<table class="table table-sm table-bordered">
 							<tr class="table-info">
-								<th width="1" class="align-middle text-nowrap">Выбор</th>
-								<th class="align-middle">Тип груза</th>
-								<th class="align-middle">Дата</th>
-								<th class="align-middle">Наименование товара</th>
-								<th class="align-middle">Кол-во</th>
-								<th class="align-middle">Ценность</th>
-								<th class="align-middle">Вес</th>
-								<th class="align-middle">Номер отслеживания</th>
-								<th class="align-middle">Комментарий</th>
-								<th width="1" class="align-middle">Услуги</th>
+								<th width="1" class="align-middle py-2 text-nowrap">Выбор</th>
+								<th class="align-middle py-2">Тип груза</th>
+								<th class="align-middle py-2">Дата</th>
+								<th class="align-middle py-2">Наименование товара</th>
+								<th class="align-middle py-2">Кол-во</th>
+								<th class="align-middle py-2">Ценность</th>
+								<th class="align-middle py-2">Вес</th>
+								<th class="align-middle py-2">Номер отслеживания</th>
+								<th class="align-middle py-2">Комментарий</th>
+								<th width="1" class="align-middle py-2">Услуги</th>
 								<th width="1" />
 							</tr>
 							<tr v-for="order of stockedOrders" :key="order['Номер']" :class="{'table-warning': order['СодержитБатареи'], 'table-danger': order['Несоответствие']}">
@@ -132,7 +132,7 @@
 									</span>
 								</td>
 								<td class="align-middle text-nowrap">
-									<b-button size="sm" variant="primary" class="mx-1" :to="`order-details/${order['Номер']}`">
+									<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}`">
 										<b-icon icon="eye-fill"/>
 									</b-button>
 								</td>
@@ -192,6 +192,7 @@
 </template>
 
 <script>
+	/* eslint-disable */
 	const IconConsolidation = {
 		template: `
 			<div class="d-inline-block" title="Консолидация">
@@ -217,6 +218,9 @@
 		},
 		async mounted() {
 			this.getOrders()
+		},
+		beforeDestroy() {
+			this.$store.dispatch('cancelRequest')
 		},
 		methods: {
 			async getOrders() {
@@ -249,24 +253,41 @@
 				this.showModal()
 			},
 			async onDelete(orderId, packageId) {
-				this.loading = true
+				this.$bvModal.msgBoxConfirm('Вы действительно хотите удалить этот товар?', {
+					title: `Удалить товар ${orderId}`,
+					headerBgVariant: 'info',
+					headerTextVariant: 'white',
+					footerBgVariant: 'light',
+					okVariant: 'danger',
+					okTitle: 'Да',
+					cancelTitle: 'Нет',
+					hideHeaderClose: false,
+					centered: true
+				})
+				.then(async confirm => {
+					if (!confirm) {
+						return
+					}
 
-				if (packageId) {
+					this.loading = true
+
+					if (packageId) {
+						try {
+							await this.$store.dispatch('deletePackage', packageId)
+							this.$toast(`Посылка ${packageId} успешно удалена!`)
+						} catch (e) {
+							this.loading = false
+						} finally {}
+					}
+
 					try {
-						await this.$store.dispatch('deletePackage', packageId)
-						this.$toast(`Посылка ${packageId} успешно удалена!`)
+						await this.$store.dispatch('deleteOrder', orderId)
+						this.getOrders()
+						this.$toast(`Товар ${orderId} успешно удален!`)
 					} catch (e) {
 						this.loading = false
 					} finally {}
-				}
-
-				try {
-					await this.$store.dispatch('deleteOrder', orderId)
-					this.getOrders()
-					this.$toast(`Заказ ${orderId} успешно удален!`)
-				} catch (e) {
-					this.loading = false
-				} finally {}
+				})
 			},
 			onNewOrder() {
 				this.selectedOrder = null

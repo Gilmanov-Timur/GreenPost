@@ -22,15 +22,12 @@
 		</template>>
 		<template v-slot:modal-footer>
 			<div class="w-100" v-if="criticalError">
-
-					<b-button variant="info" class="float-left" href="https://greenpost.uz">
-						Вернуться на сайт
-					</b-button>
-					<b-button variant="info" class="float-right" @click.prevent="onReload">
-						Обновить страницу
-					</b-button>
-
-
+				<b-button variant="info" class="float-left" href="https://greenpost.uz">
+					Вернуться на сайт
+				</b-button>
+				<b-button variant="info" class="float-right" @click.prevent="onReload">
+					Обновить страницу
+				</b-button>
 			</div>
 			<b-button class="float-right" @click.prevent="$bvModal.hide('modal-error')" v-else>
 				Закрыть

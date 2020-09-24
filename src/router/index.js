@@ -46,6 +46,12 @@ const routes = [
 				component: () => import('../views/PackageDetails.vue')
 			},
 			{
+				path: 'payments',
+				name: 'cabinetPayments',
+				meta: {auth: true},
+				component: () => import('../views/Payments.vue')
+			},
+			{
 				path: 'recipients',
 				name: 'cabinetRecipients',
 				meta: {auth: true},

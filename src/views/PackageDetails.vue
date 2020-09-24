@@ -1,20 +1,69 @@
-/* eslint-disable */
-
 <template>
 	<div>
 		<Loader v-if="loading" />
-		<h2 class="mb-4">Детали посылки</h2>
+		<div class="row mb-4 mx-n2">
+			<div class="col-auto px-2">
+				<router-link to="/packages" title="Вернуться к списку посылок">
+					<b-icon icon="arrow-left-circle" font-scale="2" variant="info" />
+				</router-link>
+			</div>
+			<div class="col px-2">
+				<h4 class="m-0">Посылка <b>{{packageId}}</b></h4>
+			</div>
+		</div>
 		<template v-if="packageId">
 			<div class="table-responsive">
 				<table class="table table-bordered">
-					<tr v-for="(value, name) in details" :key="name">
-						<td>
-							{{ name }}
-						</td>
-						<td>
-							{{ value }}
-						</td>
-					</tr>
+					<thead>
+						<tr class="table-info">
+							<th class="align-middle">Получатель</th>
+							<th class="align-middle">Общий вес</th>
+							<th class="align-middle">Объемный вес</th>
+							<th class="align-middle">Общая ценность</th>
+							<th class="align-middle">Вид перевозки</th>
+							<th class="align-middle">Номер отслеживания</th>
+							<th class="align-middle">Рейс</th>
+							<th class="align-middle">Тип доставки</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{ pack['Получатель'] }}</td>
+							<td>{{ pack['ОбщийВес'] }} кг</td>
+							<td>{{ pack['Объемный'] }} кг</td>
+							<td>{{ pack['ОбщаяЦенность'] }}</td>
+							<td>{{ pack['ВидПеревозок'] }}</td>
+							<td>{{ pack['Трек'] }}</td>
+							<td>{{ pack['Вылет'] }}</td>
+							<td>{{ pack['ТипДоставки'] }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<h4>Товары в посылке</h4>
+			<div class="table-responsive">
+				<table class="table table-bordered">
+					<thead>
+						<tr class="table-info">
+							<th class="align-middle">Наименование товара</th>
+							<th class="align-middle">Кол-во</th>
+							<th class="align-middle">Вес</th>
+							<th class="align-middle">Ценность</th>
+							<th class="align-middle">Номер отслеживания</th>
+							<th class="align-middle">Комментарий</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(order, index) in pack['Заказы']" :key="index">
+							<td>{{ order['видТовара'] }}</td>
+							<td>{{ order['количество'] }}</td>
+							<td>{{ order['вес'] }} кг</td>
+							<td>{{ order['ценность'] }}$</td>
+							<td>{{ order['трекПоступления'] }}</td>
+							<td>{{ order['комментарий'] }}</td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		</template>
@@ -30,7 +79,7 @@
 			return {
 				packageId: this.$route.params.id,
 				loading: true,
-				details: []
+				pack: []
 			}
 		},
 		async mounted() {
@@ -40,12 +89,13 @@
 			}
 
 			try {
-				this.details = await this.$store.dispatch('getPackageDetails', this.packageId)
-			} catch (e) {
-
-			} finally {
+				this.pack = await this.$store.dispatch('getPackageDetails', this.packageId)
+			} catch (e) {} finally {
 				this.loading = false
 			}
+		},
+		beforeDestroy() {
+			this.$store.dispatch('cancelRequest')
 		},
 		methods: {
 

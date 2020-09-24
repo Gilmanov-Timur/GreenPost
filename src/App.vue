@@ -40,7 +40,6 @@
 					return
 				}
 
-				// this.$bvToast.show('toast-info')
 				this.$toast(messages[message] || message)
 				this.$store.dispatch('clearToast')
 			}
@@ -52,7 +51,8 @@
 </script>
 
 <style lang="scss">
-	@import '~bootstrap';
+	@import 'assets/variables';
+	@import '~bootstrap/scss/bootstrap';
 	@import '~bootstrap-vue';
-	@import 'assets/styles.css';
+	@import 'assets/styles';
 </style>

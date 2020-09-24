@@ -1,25 +1,20 @@
-/* eslint-disable */
 import axios from 'axios'
-
-const baseUrl = 'https://cors-anywhere.herokuapp.com/https://s.lavina.uz/Meest/hs/ws/'
-// const baseUrl = 'http://localhost:8010/proxy/Meest/hs/ws/'
 const registerToken = btoa(unescape(encodeURIComponent('default:dDhC54')))
 const authorization = token => ({'Authorization': 'Basic ' + (token ? token : localStorage.getItem('token'))})
+const baseUrl = process.env.NODE_ENV === 'production'
+	? 'https://app.greenpost.uz/Meest/hs/ws/'
+	: 'https://cors-anywhere.herokuapp.com/https://app.greenpost.uz/Meest/hs/ws/'
 
 const api = {
 	_request: null,
 	_cancelToken() {
 		this._request = axios.CancelToken.source()
 	},
-	getUserInfo(token) {
-		this._cancelToken()
-		return axios({
-			url: baseUrl + 'userinfo',
-			method: 'GET',
-			headers: authorization(token),
-			cancelToken: this._request.token
-		})
-	},
+	getUserInfo: token => axios({
+		url: baseUrl + 'userinfo',
+		method: 'GET',
+		headers: authorization(token),
+	}),
 	updateUserInfo({token, formData}) {
 		this._cancelToken()
 		return axios({
@@ -137,6 +132,15 @@ const api = {
 		this._cancelToken()
 		return axios({
 			url: baseUrl + 'deletereciver?id=' + id,
+			method: 'GET',
+			headers: authorization(),
+			cancelToken: this._request.token
+		})
+	},
+	getPayments() {
+		this._cancelToken()
+		return axios({
+			url: baseUrl + 'balancemove',
 			method: 'GET',
 			headers: authorization(),
 			cancelToken: this._request.token

@@ -4,6 +4,7 @@
 		centered
 		scrollable
 		no-close-on-backdrop
+		no-close-on-esc
 		size="lg"
 		header-close-label="Закрыть"
 		title="Оформить новую посылку"
@@ -156,7 +157,6 @@
 			async submitForm() {
 				const formData = {
 					'НомерПосылки': '',
-					'НомерКлиента': this.userId,
 					"НомерПолучателя": this.form.recipient,
 					'НомерСклада': '000000001',
 					'НомерВидаПеревозок': this.form.deliveryMethod,
@@ -182,6 +182,9 @@
 					this.$bvModal.hide('modal-edit-order')
 					this.$emit('reloadOrders')
 					this.$toast(`Посылка ${response['НомерПосылки']} успешно создана!`)
+					try {
+						await this.$store.dispatch('getUserInfo')
+					} catch (e) {}
 				} catch (e) {
 
 				} finally {
@@ -193,9 +196,6 @@
 			}
 		},
 		computed: {
-			userId() {
-				return this.$store.getters.userInfo['ID']
-			},
 			deliveryMethodOptions() {
 				let battery
 				const deliveryMethods = []

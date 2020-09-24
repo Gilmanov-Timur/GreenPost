@@ -4,9 +4,12 @@
 			<div class="col col-sm-11 col-md-8 col-lg-6 col-xl-5 mx-auto">
 				<Loader v-if="loading" />
 
-				<div class="h1 mb-4 text-center text-success">GreenPost</div>
+				<div class="mb-5 text-center">
+					<a href="https://greenpost.uz/" class="h1 m-0 text-success">GreenPost</a>
+					<small class="ml-2">beta</small>
+				</div>
 
-				<b-tabs card active-nav-item-class="text-success" v-model="activeTab">
+				<b-tabs card active-nav-item-class="text-success">
 					<b-tab title="Вход">
 						<b-card-text>
 							<b-form @submit.prevent="onLogin">
@@ -15,6 +18,7 @@
 										id="login-email"
 										v-model.trim="login.email"
 										type="text"
+										:disabled="loading"
 										required
 									/>
 								</b-form-group>
@@ -24,38 +28,27 @@
 										id="login-password"
 										v-model.trim="login.password"
 										type="password"
+										:disabled="loading"
 										:required="false"
 									/>
 								</b-form-group>
 
 								<b-button type="submit" variant="primary" :disabled="loading">
-									Вход
+									Войти
 								</b-button>
 							</b-form>
-							<b-alert variant="success" :show="registered" class="mt-4">
-								<div class="font-weight-bold">Регистрация успешно завершена!</div>
-								Теперь вы можете войти используя указанные email и пароль при регистрации.
-							</b-alert>
 						</b-card-text>
 					</b-tab>
 
-					<b-tab title="Регистрация" v-if="!registered">
+					<b-tab title="Регистрация">
 						<b-card-text>
 							<b-form @submit.prevent="onRegister">
-								<b-form-group label="Фамилия:" label-for="register-surname">
-									<b-form-input
-										id="register-surname"
-										v-model.trim="register.surname"
-										type="text"
-										required
-									/>
-								</b-form-group>
-
 								<b-form-group label="Имя:" label-for="register-name">
 									<b-form-input
 										id="register-name"
 										v-model.trim="register.name"
 										type="text"
+										:disabled="loading"
 										required
 									/>
 								</b-form-group>
@@ -64,7 +57,8 @@
 									<b-form-input
 										id="register-email"
 										v-model.trim="register.email"
-										type="text"
+										type="email"
+										:disabled="loading"
 										required
 									/>
 								</b-form-group>
@@ -76,6 +70,7 @@
 										class="form-control"
 										v-model="register.phone"
 										v-mask="'+DDDDDDDDDDDD'"
+										:disabled="loading"
 										required
 									/>
 								</b-form-group>
@@ -85,21 +80,13 @@
 										id="register-password"
 										v-model.trim="register.password"
 										type="password"
-										required
-									/>
-								</b-form-group>
-
-								<b-form-group label="Подтвердите пароль:" label-for="register-password2">
-									<b-form-input
-										id="register-password2"
-										v-model.trim="register.password2"
-										type="password"
+										:disabled="loading"
 										required
 									/>
 								</b-form-group>
 
 								<b-button type="submit" variant="primary" :disabled="loading">
-									Регистрация
+									Зарегистрироваться
 								</b-button>
 							</b-form>
 						</b-card-text>
@@ -115,8 +102,6 @@
 		data() {
 			return {
 				loading: false,
-				registered: false,
-				activeTab: 0,
 				login: {
 					email: '',
 					password: '',
@@ -127,12 +112,14 @@
 					email: '',
 					phone: '',
 					password: '',
-					password2: '',
 				}
 			}
 		},
 		mounted() {
 
+		},
+		beforeDestroy() {
+			this.$store.dispatch('cancelRequest')
 		},
 		methods: {
 			async onLogin() {
@@ -157,7 +144,8 @@
 			async onRegister() {
 				const formData = {
 					'НомерКлиента': '',
-					'Фамилия': this.register.surname,
+					// 'Фамилия': this.register.surname,
+					'Фамилия': '',
 					'Имя': this.register.name,
 					'ЭлектронныйАдрес': this.register.email,
 					'НомерТелефона': this.register.phone,
@@ -172,11 +160,14 @@
 
 				try {
 					await this.$store.dispatch('register', formData)
-					this.activeTab = 0
-					this.registered = true
-				} catch (e) {
-
-				} finally {
+					await this.$store.dispatch('login', {
+						email: this.register.email,
+						password: this.register.password,
+					})
+					await this.$router.push('/')
+					this.$toast('Вы успешно зарегистрировались в системе GreenPost!')
+					await this.$store.dispatch('setToast', 'register-success')
+				} catch (e) {} finally {
 					this.loading = false
 				}
 			}

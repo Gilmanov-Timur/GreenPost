@@ -12,6 +12,7 @@
 		"bootstrap": "^4.5.2",
 		"bootstrap-vue": "^2.16.0",
 		"core-js": "^3.6.5",
+		"inputmask": "^5.0.5",
 		"v-mask": "^2.2.3",
 		"vue": "^2.6.11",
 		"vue-axios": "^2.1.5",

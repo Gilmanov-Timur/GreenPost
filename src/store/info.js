@@ -35,7 +35,18 @@ export default {
 		},
 		clearUserInfo({commit}) {
 			commit('clearInfo')
-		}
+		},
+		async getPayments({dispatch, commit}) {
+			try {
+				const response = await api.getPayments()
+				return response.data
+			} catch (e) {
+				if (!axios.isCancel(e)) {
+					commit('setError', e)
+				}
+				throw e
+			}
+		},
 	},
 	mutations: {
 		setUserInfo(state, userInfo) {

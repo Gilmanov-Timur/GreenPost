@@ -4,6 +4,7 @@
 		centered
 		scrollable
 		no-close-on-backdrop
+		no-close-on-esc
 		size="lg"
 		header-close-label="Закрыть"
 		:title="selectedOrder ? `Редактирование заказа ${selectedOrder}` : 'Добавить новый заказ'"
@@ -11,6 +12,7 @@
 		header-text-variant="white"
 		footer-bg-variant="light"
 		@show="onShow"
+		@shown="onShown"
 		@hide="onHide"
 	>
 		<template v-slot:default>
@@ -19,7 +21,7 @@
 				<div class="form-group px-3 py-2 border border-info rounded-pill">
 					<div class="d-inline-block mr-2 mb-1">
 						<b-form-checkbox size="lg" v-model="form.readyToShip" switch>
-							<small>Готовый груз (отправить немедленно)?</small>
+							<small>Отправить в один клик</small>
 						</b-form-checkbox>
 					</div>
 					<b-icon icon="question-circle" class="my-1 align-middle" v-b-tooltip.hover title="Активируйте флажок, если желаете при поступлении товара незамедлительно переслать посылку на Ваш адрес, без возможности объединить ее с другими товарами и без проверки вложения." />
@@ -30,7 +32,7 @@
 						Номер для отслеживания <span class="text-danger">*</span>
 					</label>
 					<div class="col">
-						<b-input id="form-track-number" v-model="form.trackNumber" required />
+						<input type="text" id="form-track-number" class="form-control" v-model.trim="form.trackNumber" v-mask="'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS'" required />
 					</div>
 				</div>
 
@@ -48,7 +50,7 @@
 						Количество <span class="text-danger">*</span>
 					</label>
 					<div class="col">
-						<b-input id="form-product-count" v-model="form.productCount" required />
+						<input type="text" id="form-product-count" class="form-control" v-model="form.productCount" v-mask="'DDDDDDDDDD'" required />
 					</div>
 				</div>
 
@@ -57,8 +59,17 @@
 						Ценность в $ <span class="text-danger">*</span>
 					</label>
 					<div class="col">
-						<b-input id="form-product-price" v-model="form.productPrice" required />
+						<input type="text" id="form-product-price" class="form-control" ref="productPrice" v-model="form.productPrice" required />
 					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="d-inline-block mr-2 mb-1">
+						<b-form-checkbox size="lg" v-model="form.battery" switch>
+							<small>Товар с батарейками/жидкостями/порошками?</small>
+						</b-form-checkbox>
+					</div>
+					<b-icon icon="question-circle" class="my-1 align-middle" v-b-tooltip.hover title="Тип доставки зависит от опасности перевозимых товаров." />
 				</div>
 
 				<div class="form-group">
@@ -69,7 +80,7 @@
 							v-model.trim="form.productImage"
 						/>
 						<b-input-group-append>
-							<b-button size="sm" variant="info" class="mx-1" :disabled="!form.productImage" :href="form.productImage" target="_blank">
+							<b-button size="sm" variant="info" class="ml-1" :disabled="!form.productImage" :href="form.productImage" target="_blank">
 								<b-icon icon="eye-fill"/>
 							</b-button>
 						</b-input-group-append>
@@ -87,37 +98,56 @@
 					/>
 				</div>
 
-				<div class="mb-4"><span class="text-danger">*</span> - поля обязательные для заполнения</div>
+				<b-button
+					variant="info"
+					class="mb-1"
+					:class="servicesVisible ? null : 'collapsed'"
+					@click="servicesVisible = !servicesVisible"
+				>
+					Дополнительные услуги
+					<b-icon icon="chevron-up" v-if="servicesVisible"/>
+					<b-icon icon="chevron-down" v-else />
+				</b-button>
+				<b-collapse id="services" v-model="servicesVisible">
+					<b-card no-body class="p-2">
+						<div class="form-group">
+							<div class="d-inline-block mr-2 mb-1">
+								<b-form-checkbox size="lg" v-model="form.check" switch :disabled="form.readyToShip">
+									<small>Проверка на соответствие?</small>
+								</b-form-checkbox>
+							</div>
+							<span class="text-danger align-middle">0.5$/кг</span>
+						</div>
 
-				<div class="form-group">
-					<b-form-checkbox size="lg" v-model="form.battery" switch>
-						<small>Товар с батарейками/жидкостями/порошками?</small>
-					</b-form-checkbox>
-				</div>
+						<div class="form-group">
+							<div class="d-inline-block mr-2 mb-1">
+								<b-form-checkbox size="lg" v-model="form.photoReport" switch :disabled="!form.check">
+									<small>Фотоотчёт?</small>
+								</b-form-checkbox>
+							</div>
+							<span class="text-danger align-middle">1$/шт</span>
+						</div>
 
-				<div class="form-group">
-					<b-form-checkbox size="lg" v-model="form.check" switch :disabled="form.readyToShip">
-						<small>Проверка на соответствие?</small>
-					</b-form-checkbox>
-				</div>
+						<div class="form-group">
+							<div class="d-inline-block mr-2 mb-1">
+								<b-form-checkbox size="lg" v-model="form.originalPackage" switch>
+									<small>Оставить оригинальную упаковку?</small>
+								</b-form-checkbox>
+							</div>
+							<span class="text-success align-middle">бесплатно</span>
+						</div>
 
-				<div class="form-group">
-					<b-form-checkbox size="lg" v-model="form.photoReport" switch :disabled="!form.check">
-						<small>Фотоотчёт?</small>
-					</b-form-checkbox>
-				</div>
+						<div class="form-group">
+							<div class="d-inline-block mr-2 mb-1">
+								<b-form-checkbox size="lg" v-model="form.repack" switch :disabled="!form.readyToShip">
+									<small>Переупаковать?</small>
+								</b-form-checkbox>
+							</div>
+							<span class="text-danger align-middle">0.4$/кг</span>
+						</div>
+					</b-card>
+				</b-collapse>
 
-				<div class="form-group">
-					<b-form-checkbox size="lg" v-model="form.originalPackage" switch>
-						<small>Оставить фабричную упаковку?</small>
-					</b-form-checkbox>
-				</div>
-
-				<div class="form-group">
-					<b-form-checkbox size="lg" v-model="form.repack" switch :disabled="!form.readyToShip">
-						<small>Переупаковать?</small>
-					</b-form-checkbox>
-				</div>
 				<button type="submit" class="d-none" ref="submitButton" />
 			</b-form>
 		</template>
@@ -132,10 +162,13 @@
 </template>
 
 <script>
+	import Inputmask from 'inputmask'
+
 	export default {
 		data() {
 			return {
 				loading: false,
+				servicesVisible: false,
 				form: {
 					productId: '',
 					trackNumber: '',
@@ -162,6 +195,10 @@
 			onShow() {
 				this.resetForm()
 				this.getOrderData()
+			},
+			onShown() {
+				const im = new Inputmask({alias: 'numeric', digits: 2, allowMinus: false, rightAlign: false, placeholder: ''});
+				im.mask(this.$refs.productPrice);
 			},
 			async getOrderData() {
 				if (!this.selectedOrder) {
@@ -266,6 +303,7 @@
 				this.form.repack = false
 			},
 			async onHide() {
+				Inputmask.remove(this.$refs.productPrice);
 				await this.$store.dispatch('cancelRequest')
 			},
 			transformOptions(options = []) {
