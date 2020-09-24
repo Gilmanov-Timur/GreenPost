@@ -12,7 +12,6 @@
 		header-text-variant="white"
 		footer-bg-variant="light"
 		@show="onShow"
-		@shown="onShown"
 		@hide="onHide"
 	>
 		<template v-slot:default>
@@ -32,7 +31,13 @@
 						Номер для отслеживания <span class="text-danger">*</span>
 					</label>
 					<div class="col">
-						<input type="text" id="form-track-number" class="form-control" v-model.trim="form.trackNumber" v-mask="'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS'" required />
+						<input
+							type="text"
+							id="form-track-number"
+							class="form-control"
+							v-model.trim="form.trackNumber"
+							v-mask="{regex: '\\S*'}"
+						required />
 					</div>
 				</div>
 
@@ -50,7 +55,14 @@
 						Количество <span class="text-danger">*</span>
 					</label>
 					<div class="col">
-						<input type="text" id="form-product-count" class="form-control" v-model="form.productCount" v-mask="'DDDDDDDDDD'" required />
+						<input
+							type="text"
+							id="form-product-count"
+							class="form-control"
+							v-model="form.productCount"
+							v-mask="{alias: 'integer', min: 1, allowMinus: false, rightAlign: false}"
+							required
+						/>
 					</div>
 				</div>
 
@@ -59,7 +71,15 @@
 						Ценность в $ <span class="text-danger">*</span>
 					</label>
 					<div class="col">
-						<input type="text" id="form-product-price" class="form-control" ref="productPrice" v-model="form.productPrice" required />
+						<input
+							type="text"
+							id="form-product-price"
+							class="form-control"
+							ref="productPrice"
+							v-model="form.productPrice"
+							v-mask="{alias: 'numeric', digits: 2, allowMinus: false, rightAlign: false, placeholder: ''}"
+							required
+						/>
 					</div>
 				</div>
 
@@ -162,8 +182,6 @@
 </template>
 
 <script>
-	import Inputmask from 'inputmask'
-
 	export default {
 		data() {
 			return {
@@ -195,10 +213,6 @@
 			onShow() {
 				this.resetForm()
 				this.getOrderData()
-			},
-			onShown() {
-				const im = new Inputmask({alias: 'numeric', digits: 2, allowMinus: false, rightAlign: false, placeholder: ''});
-				im.mask(this.$refs.productPrice);
 			},
 			async getOrderData() {
 				if (!this.selectedOrder) {
@@ -303,7 +317,6 @@
 				this.form.repack = false
 			},
 			async onHide() {
-				Inputmask.remove(this.$refs.productPrice);
 				await this.$store.dispatch('cancelRequest')
 			},
 			transformOptions(options = []) {

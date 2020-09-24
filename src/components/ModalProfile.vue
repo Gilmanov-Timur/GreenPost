@@ -41,7 +41,7 @@
 						id="form-phone"
 						class="form-control"
 						v-model="form.phone"
-						v-mask="'+DDDDDDDDDDDD'"
+						v-mask="{mask: '+[999999999999]', greedy: false, showMaskOnHover: false, showMaskOnFocus: false}"
 						required
 					/>
 				</b-form-group>

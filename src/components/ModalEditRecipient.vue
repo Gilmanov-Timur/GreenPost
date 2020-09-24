@@ -28,7 +28,14 @@
 						Серия паспорта <span class="text-danger">*</span>
 					</label>
 					<div class="col">
-						<input type="text" id="form-passport" class="form-control" v-model="form.passport" v-mask="'SSSSSSSSS'" required />
+						<input
+							type="text"
+							id="form-passport"
+							class="form-control"
+							v-model="form.passport"
+							v-mask="{mask: 'AA9999999', greedy: false, showMaskOnHover: false, showMaskOnFocus: false}"
+							required
+						/>
 					</div>
 				</div>
 
@@ -37,7 +44,14 @@
 						Номер телефона <span class="text-danger">*</span>
 					</label>
 					<div class="col">
-						<input type="tel" id="form-phone" class="form-control" v-model="form.phone" v-mask="'+DDDDDDDDDDDD'" required />
+						<input
+							type="tel"
+							id="form-phone"
+							class="form-control"
+							v-model="form.phone"
+							v-mask="{mask: '+[999999999999]', greedy: false, showMaskOnHover: false, showMaskOnFocus: false}"
+							required
+						/>
 					</div>
 				</div>
 

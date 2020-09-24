@@ -54,10 +54,11 @@
 								</b-form-group>
 
 								<b-form-group label="E-mail:" label-for="register-email">
-									<b-form-input
-										id="register-email"
-										v-model.trim="register.email"
+									<input
 										type="email"
+										id="register-email"
+										class="form-control"
+										v-model.trim="register.email"
 										:disabled="loading"
 										required
 									/>
@@ -69,7 +70,7 @@
 										id="register-phone"
 										class="form-control"
 										v-model="register.phone"
-										v-mask="'+DDDDDDDDDDDD'"
+										v-mask="{mask: '+[999999999999]', greedy: false, showMaskOnHover: false, showMaskOnFocus: false}"
 										:disabled="loading"
 										required
 									/>
