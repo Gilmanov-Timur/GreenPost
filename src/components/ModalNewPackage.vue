@@ -60,7 +60,7 @@
 					</b-input-group>
 				</div>
 
-				<div class="form-group">
+				<!--<div class="form-group">
 					<label for="form-delivery-method">
 						Способ доставки
 					</label>
@@ -72,7 +72,7 @@
 							required
 						/>
 					</b-input-group>
-				</div>
+				</div>-->
 
 				<button type="submit" class="d-none" ref="submitButton" />
 			</b-form>
@@ -106,7 +106,7 @@
 						value: '000000003', text: 'Адресная доставка, г. Ташкент',
 					},
 					{
-						value: '000000004', text: 'Адресная доставка, области',
+						value: '000000004', text: 'Адресная доставка, регионы',
 					},
 				],
 			}

@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import api from '@/utils/api'
-import auth from './auth'
-import info from './info'
+import user from './user'
 import orders from './orders'
 import packages from './packages'
 import recipients from './recipients'
+import payments from './payments'
+import tickets from './tickets'
 
 Vue.use(Vuex)
 
@@ -59,6 +60,6 @@ export default new Vuex.Store({
 		toast: state => state.toast,
 	},
 	modules: {
-		auth, info, orders, packages, recipients
+		user, orders, packages, recipients, payments, tickets
 	}
 })

@@ -4,7 +4,7 @@
 
 		<div class="row mb-4 mx-n2">
 			<div class="col-auto px-2">
-				<router-link to="/orders" title="Вернуться к списку товаров">
+				<router-link :to="'/orders?tab=' + activeTab" title="Вернуться к списку товаров">
 					<b-icon icon="arrow-left-circle" font-scale="2" variant="info" />
 				</router-link>
 			</div>
@@ -38,7 +38,7 @@
 					</tr>
 					<tr v-if="order['Фото']">
 						<td>Фото</td>
-						<td><img :src="order['Фото']" alt="" /></td>
+						<td><img :src="order['Фото']" alt="" class="img-fluid" /></td>
 					</tr>
 					<tr>
 						<td>Комментарий</td>
@@ -81,6 +81,7 @@
 		data() {
 			return {
 				orderId: this.$route.params.id,
+				activeTab: this.$route.query && Number(this.$route.query.tab) || 0,
 				loading: true,
 				order: {},
 				options: {},

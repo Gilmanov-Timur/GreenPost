@@ -13,7 +13,7 @@
 
 		<Loader v-if="loading" />
 
-		<b-tabs card active-nav-item-class="text-success" v-model="activeTab">
+		<b-tabs card active-nav-item-class="text-success" v-model="activeTab" @input="onTabChange">
 			<b-tab title="Купленные">
 				<b-card-text>
 					<div class="table-responsive">
@@ -54,7 +54,7 @@
 									</span>
 								</td>
 								<td class="align-middle text-nowrap">
-									<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}`">
+									<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}?tab=${activeTab}`">
 										<b-icon icon="eye-fill"/>
 									</b-button>
 
@@ -132,7 +132,7 @@
 									</span>
 								</td>
 								<td class="align-middle text-nowrap">
-									<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}`">
+									<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}?tab=${activeTab}`">
 										<b-icon icon="eye-fill"/>
 									</b-button>
 								</td>
@@ -209,7 +209,7 @@
 		data() {
 			return {
 				loading: false,
-				activeTab: 0,
+				activeTab: this.$route.query && Number(this.$route.query.tab) || 0,
 				orders: [],
 				newOrderData: null,
 				selectedOrder: null,
@@ -233,15 +233,16 @@
 
 				try {
 					const orders = await this.$store.dispatch('getOrders', dateRange)
-					orders
-						.filter(order => ['В ожидании', 'На складе'].includes(order['Статус']))
+					const filteredOrders = orders.filter(order => ['В ожидании', 'На складе'].includes(order['Статус']) && !order['ПометкаУдаления'])
+
+					filteredOrders
 						.sort((a, b) => Number(b['Номер'].replace(/\D/g, '')) - Number(a['Номер'].replace(/\D/g, '')))
 						.forEach(order => {
 							order.check = order['ДополнительныеУслуги'].includes('Проверить на соответствие')
 							order.photoReport = order['ДополнительныеУслуги'].includes('Сделать фото товара и проверить по дополнительным комментариям')
 							order.repack = order['ДополнительныеУслуги'].includes('Переупаковка')
 						})
-					this.orders = orders
+					this.orders = filteredOrders
 				} catch (e) {
 
 				} finally {
@@ -306,6 +307,9 @@
 			},
 			updateTimestamp() {
 				this.timestamp = Date.now()
+			},
+			onTabChange(index) {
+				this.$router.replace(`${this.$route.path}?tab=${index}`)
 			},
 		},
 		computed: {

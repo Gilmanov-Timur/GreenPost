@@ -8,7 +8,7 @@
 
 		<Loader v-if="loading" />
 
-		<b-tabs card active-nav-item-class="text-success" v-model="activeTab">
+		<b-tabs card active-nav-item-class="text-success" v-model="activeTab" @input="onTabChange">
 			<b-tab title="В обработке">
 				<b-card-text>
 					<div class="table-responsive">
@@ -16,7 +16,6 @@
 							<thead>
 								<tr class="table-info">
 									<th class="align-middle py-2">Дата</th>
-									<th class="align-middle py-2">Тип доставки</th>
 									<th class="align-middle py-2">Номер посылки</th>
 									<th class="align-middle py-2">Вес</th>
 									<th class="align-middle py-2">Ценность</th>
@@ -28,14 +27,13 @@
 							<tbody>
 								<tr v-for="pack of processedPackages" :key="pack['Номер']">
 									<td class="align-middle">{{ pack['Дата'] }}</td>
-									<td class="align-middle">{{pack['ТипДоставки']}}</td>
 									<td class="align-middle">{{pack['Номер']}}</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщийВес']}} кг</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщаяЦенность']}} $</td>
 									<td class="align-middle">{{pack['Получатель']}}</td>
 									<td class="align-middle">{{pack['Статус']}}</td>
 									<td class="align-middle text-nowrap">
-										<b-button size="sm" variant="info" class="mx-1" :to="`package-details/${pack['Номер']}`">
+										<b-button size="sm" variant="info" class="mx-1" :to="`package-details/${pack['Номер']}?tab=${activeTab}`">
 											<b-icon icon="eye-fill"/>
 										</b-button>
 										<b-button
@@ -63,22 +61,23 @@
 							<thead>
 								<tr class="table-info">
 									<th class="align-middle py-2">Дата</th>
-									<th class="align-middle py-2">Тип доставки</th>
 									<th class="align-middle py-2">Рейс</th>
 									<th class="align-middle py-2">Номер отслеживания</th>
+									<th class="align-middle py-2">Статус</th>
 									<th class="align-middle py-2">Вес</th>
 									<th class="align-middle py-2">Ценность</th>
 									<th class="align-middle py-2">Получатель</th>
 									<th class="align-middle py-2">Стоимость доставки</th>
+									<th class="align-middle py-2">Долг посылки</th>
 									<th width="1" />
 								</tr>
 							</thead>
 							<tbody>
 								<tr v-for="pack of shippedPackages" :key="pack['Номер']">
 									<td class="align-middle">{{ pack['Дата'] }}</td>
-									<td class="align-middle">{{pack['ТипДоставки']}}</td>
 									<td class="align-middle">{{pack['Рейс']}}</td>
 									<td class="align-middle">{{pack['Трек']}}</td>
+									<td class="align-middle">{{pack['Статус']}}</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщийВес']}} кг</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщаяЦенность']}} $</td>
 									<td class="align-middle">{{pack['Получатель']}}</td>
@@ -86,7 +85,10 @@
 										{{ pack['ЦенаПосылки'] !== '' ? pack['ЦенаПосылки'].toFixed(2) + ' $' : '' }}
 									</td>
 									<td class="align-middle text-nowrap">
-										<b-button size="sm" variant="info" class="mx-1" :disabled="loading" :to="`package-details/${pack['Номер']}`">
+										{{ pack['ДолгПосылки'] !== '' ? pack['ДолгПосылки'].toFixed(2) + ' $' : '' }}
+									</td>
+									<td class="align-middle text-nowrap">
+										<b-button size="sm" variant="info" class="mx-1" :disabled="loading" :to="`package-details/${pack['Номер']}?tab=${activeTab}`">
 											<b-icon icon="eye-fill"/>
 										</b-button>
 									</td>
@@ -105,13 +107,13 @@
 		data() {
 			return {
 				loading: false,
-				activeTab: 0,
+				activeTab: this.$route.query && Number(this.$route.query.tab) || 0,
 				packages: [],
 				selectedPackages: []
 			}
 		},
 		async mounted() {
-			this.getPackages()
+			await this.getPackages()
 		},
 		beforeDestroy() {
 			this.$store.dispatch('cancelRequest')
@@ -127,7 +129,7 @@
 
 				try {
 					const packages = await this.$store.dispatch('getPackages', dateRange)
-					packages.sort((a, b) => Number(b['Номер'].replace(/\D/g, '')) - Number(a['Номер'].replace(/\D/g, '')))
+					packages.sort((a, b) => Number(b['Номер']) - Number(a['Номер']))
 					this.packages = packages
 				} catch (e) {} finally {
 					this.loading = false
@@ -172,6 +174,9 @@
 						this.loading = false
 					} finally {}
 				})
+			},
+			onTabChange(index) {
+				this.$router.replace(`${this.$route.path}?tab=${index}`)
 			},
 		},
 		computed: {

@@ -57,6 +57,24 @@ const routes = [
 				meta: {auth: true},
 				component: () => import('../views/Recipients.vue')
 			},
+			{
+				path: 'tickets',
+				name: 'cabinetTickets',
+				meta: {auth: true},
+				component: () => import('../views/Tickets.vue')
+			},
+			{
+				path: 'tickets/new',
+				name: 'cabinetTicketsNew',
+				meta: {auth: true},
+				component: () => import('../views/TicketsNew.vue')
+			},
+			{
+				path: 'tickets/:id',
+				name: 'cabinetTicketDetails',
+				meta: {auth: true},
+				component: () => import('../views/TicketDetails.vue')
+			},
 		]
 	},
 	{

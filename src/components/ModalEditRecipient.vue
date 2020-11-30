@@ -56,8 +56,8 @@
 				</div>
 
 				<div class="form-group">
-					<label for="form-warehouse" class="d-block">
-						Область <span class="text-danger">*</span>
+					<label for="form-region" class="d-block">
+						Регион <span class="text-danger">*</span>
 					</label>
 					<b-form-select
 						id="form-region"

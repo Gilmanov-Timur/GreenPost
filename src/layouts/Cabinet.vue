@@ -22,6 +22,7 @@
 									<b-avatar round />
 								</div>
 								<div class="mb-1 user-name text-white-50">
+									{{ userInfo['Фамилия'] }}
 									{{ userInfo['Имя'] }}
 								</div>
 								<div class="user-id mb-1 text-white">
@@ -51,11 +52,14 @@
 						<b-nav-item to="/packages" active-class="active" exact>
 							<b-icon icon="box"/> ПОСЫЛКИ
 						</b-nav-item>
-						<b-nav-item to="/payments" active-class="active" exact disabled>
+						<b-nav-item to="/payments" active-class="active" exact>
 							<b-icon icon="wallet2"/> РАСЧЕТЫ
 						</b-nav-item>
 						<b-nav-item to="/recipients" active-class="active" exact>
 							<b-icon icon="people"/> ПОЛУЧАТЕЛИ
+						</b-nav-item>
+						<b-nav-item to="/tickets" active-class="active" exact>
+							<b-icon icon="envelope"/> ОБРАЩЕНИЯ
 						</b-nav-item>
 					</b-nav>
 				</div>
@@ -126,7 +130,7 @@
 				return this.$store.getters.userInfo
 			},
 			balance() {
-				return this.userInfo['Баланс']
+				return this.userInfo['Баланс'].toFixed(2)
 			},
 		},
 		watch: {

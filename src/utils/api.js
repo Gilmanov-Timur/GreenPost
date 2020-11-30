@@ -146,6 +146,54 @@ const api = {
 			cancelToken: this._request.token
 		})
 	},
+	getTickets(id) {
+		this._cancelToken()
+		return axios({
+			url: baseUrl + 'ticketall?id=' + id,
+			method: 'GET',
+			headers: authorization(),
+			cancelToken: this._request.token
+		})
+	},
+	getTicketDetails(id) {
+		this._cancelToken()
+		return axios({
+			url: baseUrl + '/ticket?id=' + id,
+			method: 'GET',
+			headers: authorization(),
+			cancelToken: this._request.token
+		})
+	},
+	newTicket(data) {
+		this._cancelToken()
+		return axios({
+			url: baseUrl + 'ticketnew',
+			method: 'POST',
+			data: data,
+			headers: authorization(),
+			cancelToken: this._request.token
+		})
+	},
+	sendTicketMessage(data) {
+		this._cancelToken()
+		return axios({
+			url: baseUrl + '/ticketaddmessage',
+			method: 'POST',
+			data: data,
+			headers: authorization(),
+			cancelToken: this._request.token
+		})
+	},
+	closeTicket(data) {
+		this._cancelToken()
+		return axios({
+			url: baseUrl + '/ticketclose',
+			method: 'POST',
+			data: data,
+			headers: authorization(),
+			cancelToken: this._request.token
+		})
+	},
 	cancelRequest() {
 		if (this._request) {
 			this._request.cancel()

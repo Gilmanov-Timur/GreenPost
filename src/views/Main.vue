@@ -31,16 +31,16 @@
 					</template>
 					<b-card-text>
 						<div>
-							<b>Адрес:</b> 广州市白云区松洲街道罗冲围松南路13号富成大厦701室
+							<b>地址:</b> 广州市白云区松洲街道罗冲围松南路13号富成大厦701室
 						</div>
 						<div>
-							<b>Получатель:</b> ID: {{ userInfo['ID'] }}
+							<b>收货人:</b> ID:{{ userInfo['ID'] }}
 						</div>
 						<div>
-							<b>Почтовый индекс:</b> 510160
+							<b>邮政编码:</b> 510160
 						</div>
 						<div>
-							<b>Телефон:</b> +8618344567736
+							<b>手机号:</b> 18344567736
 						</div>
 					</b-card-text>
 				</b-card>
@@ -54,6 +54,7 @@
 						<th class="align-middle">Дата</th>
 						<th class="align-middle">Наименование товара</th>
 						<th class="align-middle">Номер отслеживания</th>
+						<th class="align-middle">Поступил на склад</th>
 						<th class="align-middle">Статус</th>
 						<th class="align-middle">Посылка</th>
 					</tr>
@@ -66,6 +67,9 @@
 						</td>
 						<td class="align-middle">
 							{{ order['ТрекПоступления'] }}
+						</td>
+						<td class="align-middle">
+							{{ order['ПоступилНаСклад'] }}
 						</td>
 						<td class="align-middle">
 							{{ order['Статус'] }}

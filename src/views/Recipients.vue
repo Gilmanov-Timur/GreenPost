@@ -38,9 +38,6 @@
 						<b-button size="sm" variant="info" class="mx-1" @click.prevent="() => onEdit(recipient['Номер'])">
 							<b-icon icon="pencil-square"/>
 						</b-button>
-						<b-button size="sm" variant="danger" class="mx-1" @click.prevent="() => onDelete(recipient['Номер'])">
-							<b-icon icon="trash"/>
-						</b-button>
 					</td>
 				</tr>
 			</table>

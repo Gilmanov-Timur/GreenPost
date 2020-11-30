@@ -19,7 +19,7 @@
 		</template>
 		<template v-slot:default>
 			<div v-html="message" />
-		</template>>
+		</template>
 		<template v-slot:modal-footer>
 			<div class="w-100" v-if="criticalError">
 				<b-button variant="info" class="float-left" href="https://greenpost.uz">

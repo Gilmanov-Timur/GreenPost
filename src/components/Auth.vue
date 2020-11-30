@@ -43,6 +43,16 @@
 					<b-tab title="Регистрация">
 						<b-card-text>
 							<b-form @submit.prevent="onRegister">
+								<b-form-group label="Фамилия:" label-for="register-surname">
+									<b-form-input
+										id="register-surname"
+										v-model.trim="register.surname"
+										type="text"
+										:disabled="loading"
+										required
+									/>
+								</b-form-group>
+
 								<b-form-group label="Имя:" label-for="register-name">
 									<b-form-input
 										id="register-name"
@@ -81,9 +91,24 @@
 										id="register-password"
 										v-model.trim="register.password"
 										type="password"
+										@input="register.passwordMismatch = false"
 										:disabled="loading"
 										required
 									/>
+								</b-form-group>
+
+								<b-form-group label="Повторите пароль:" label-for="register-password2">
+									<b-form-input
+										id="register-password2"
+										v-model.trim="register.password2"
+										type="password"
+										@input="register.passwordMismatch = false"
+										:disabled="loading"
+										required
+									/>
+									<b-tooltip :show.sync="register.passwordMismatch" target="register-password2" placement="topright" triggers="manual">
+										Пароли не совпадают!
+									</b-tooltip>
 								</b-form-group>
 
 								<b-button type="submit" variant="primary" :disabled="loading">
@@ -113,6 +138,8 @@
 					email: '',
 					phone: '',
 					password: '',
+					password2: '',
+					passwordMismatch: false
 				}
 			}
 		},
@@ -145,8 +172,7 @@
 			async onRegister() {
 				const formData = {
 					'НомерКлиента': '',
-					// 'Фамилия': this.register.surname,
-					'Фамилия': '',
+					'Фамилия': this.register.surname,
 					'Имя': this.register.name,
 					'ЭлектронныйАдрес': this.register.email,
 					'НомерТелефона': this.register.phone,
@@ -154,6 +180,12 @@
 				}
 
 				if (this.loading) {
+					return
+				}
+
+				if (this.register.password !== this.register.password2) {
+					this.register.passwordMismatch = true
+					console.log('password mismatch')
 					return
 				}
 
