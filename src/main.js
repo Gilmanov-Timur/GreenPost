@@ -8,6 +8,8 @@ import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import Loader from '@/components/Loader'
 import messagePlugin from '@/utils/message.plugin'
 import dateFilter from '@/filters/date.filter'
+import './registerServiceWorker'
+
 const VueInputMask = require('vue-inputmask').default
 
 Vue.use(VueAxios, axios)

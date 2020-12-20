@@ -29,7 +29,7 @@
 					Обновить страницу
 				</b-button>
 			</div>
-			<b-button class="float-right" @click.prevent="$bvModal.hide('modal-error')" v-else>
+			<b-button class="m-auto" @click.prevent="$bvModal.hide('modal-error')" v-else>
 				Закрыть
 			</b-button>
 		</template>

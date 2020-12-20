@@ -13,17 +13,41 @@ body {
 	pointer-events: none;
 }
 
-.cabinet-sidebar {
-
+.navbar {
+	background: #21bf86;
 }
 
-.cabinet-nav a {
-	color: #a0e9a0;
+.text-green {
+	color: #21bf86;
 }
 
-.cabinet-nav .active {
-	border-right: 5px solid #1abb9c;
-	background: rgba(255, 255, 255, .05);
+.logo {
+	margin: 1px 10px 0 0;
+	img {
+		height: 40px;
+	}
+}
+
+.brand {
+	margin-top: -2px;
+	font-weight: bold;
+	font-size: 26px;
+	line-height: 1;
+}
+
+.slogan {
+	font-size: 12px;
+}
+
+.cabinet-nav {
+	font-size: 1.125rem;
+	a {
+		color: #a0e9a0;
+	}
+	.active {
+		border-right: 5px solid #1abb9c;
+		background: rgba(255, 255, 255, .05);
+	}
 }
 
 .loader {
@@ -93,6 +117,12 @@ body {
 	}
 }
 
+.card-body:after {
+	content: '';
+	clear: both;
+	display: block;
+}
+
 .order-search-form {
 	max-width: 500px;
 }
@@ -102,9 +132,14 @@ body {
 	transition: margin-left .3s ease-in-out;
 }
 
+.selected-orders {
+	z-index: 1;
+	bottom: 0;
+}
+
 @media (min-width: 992px) {
 	.cabinet-main.sidebar-open {
-		margin-left: 250px;
+		margin-left: 200px;
 	}
 	.b-sidebar-backdrop {
 		display: none;

@@ -165,11 +165,9 @@
 
 					try {
 						await this.$store.dispatch('deletePackage', packageId)
-						this.getPackages()
+						await this.getPackages()
 						this.$toast(`Посылка ${packageId} успешно удалена!`)
-						try {
-							await this.$store.dispatch('getUserInfo')
-						} catch (e) {}
+						await this.$store.dispatch('getUserInfo')
 					} catch (e) {
 						this.loading = false
 					} finally {}
@@ -181,10 +179,10 @@
 		},
 		computed: {
 			processedPackages() {
-				return this.packages.filter(pack => pack['Статус'] !== 'Отправлена')
+				return this.packages.filter(pack => !['Отправлена', 'На ММПО в Ташкенте', 'Доставлена'].includes(pack['Статус']))
 			},
 			shippedPackages() {
-				return this.packages.filter(pack => pack['Статус'] === 'Отправлена')
+				return this.packages.filter(pack => ['Отправлена', 'На ММПО в Ташкенте', 'Доставлена'].includes(pack['Статус']))
 			},
 		},
 		components: {

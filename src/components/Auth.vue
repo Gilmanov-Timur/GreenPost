@@ -5,8 +5,19 @@
 				<Loader v-if="loading" />
 
 				<div class="mb-5 text-center">
-					<a href="https://greenpost.uz/" class="h1 m-0 text-success">GreenPost</a>
-					<small class="ml-2">beta</small>
+					<div class="d-inline-flex text-left text-green">
+						<div class="logo">
+							<img src="@/assets/logo-green.svg" alt="" />
+						</div>
+						<div>
+							<div class="brand">
+								GREEN POST
+							</div>
+							<div class="slogan">
+								выгодная доставка из Китая
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<b-tabs card active-nav-item-class="text-success">

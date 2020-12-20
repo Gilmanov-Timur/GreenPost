@@ -30,7 +30,7 @@
 			</b-form>
 		</template>
 		<template v-slot:modal-footer>
-			<div class="text-right">
+			<div class="w-100">
 				<b-button variant="success" :disabled="loading" @click.prevent="() => $refs.submitButton.click()">
 					Закрыть обращение
 				</b-button>

@@ -78,7 +78,7 @@
 			</b-form>
 		</template>
 		<template v-slot:modal-footer>
-			<div class="text-right">
+			<div class="w-100">
 				<b-button variant="success" :disabled="!recipientOptions.length || loading" @click.prevent="onSave">
 					Сохранить
 				</b-button>

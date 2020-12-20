@@ -5,7 +5,7 @@
 		<div class="h-100" v-if="Object.keys(userInfo).length">
 			<b-sidebar
 				id="sidebar"
-				width="250px"
+				width="200px"
 				shadow
 				no-header
 				backdrop
@@ -15,13 +15,13 @@
 				v-model="sidebarOpen"
 			>
 				<div class="py-3">
-					<div class="mb-3 text-center">
+					<div class="mb-3 text-center px-3">
 						<b-dropdown variant="dark">
 							<template v-slot:button-content>
 								<div class="user-avatar">
 									<b-avatar round />
 								</div>
-								<div class="mb-1 user-name text-white-50">
+								<div class="mb-1 text-white-50 text-wrap text-break">
 									{{ userInfo['Фамилия'] }}
 									{{ userInfo['Имя'] }}
 								</div>
@@ -46,10 +46,10 @@
 						<b-nav-item to="/" active-class="active" exact>
 							<b-icon icon="house-door"/> ГЛАВНАЯ
 						</b-nav-item>
-						<b-nav-item to="/orders" active-class="active" exact>
+						<b-nav-item to="/orders" active-class="active">
 							<b-icon icon="cart3"/> ТОВАРЫ
 						</b-nav-item>
-						<b-nav-item to="/packages" active-class="active" exact>
+						<b-nav-item to="/packages" active-class="active">
 							<b-icon icon="box"/> ПОСЫЛКИ
 						</b-nav-item>
 						<b-nav-item to="/payments" active-class="active" exact>
@@ -66,20 +66,32 @@
 			</b-sidebar>
 
 			<main id="main" class="cabinet-main" :class="{'sidebar-open': sidebarOpen}">
-				<b-navbar variant="info" class="py-0">
-					<b-navbar-nav class="flex-row align-items-center">
-						<b-nav-text>
-							<b-button size="sm" variant="info" @click.prevent="sidebarOpen = !sidebarOpen">
+				<b-navbar class="py-0">
+					<b-navbar-nav class="row align-items-center m-0 w-100">
+						<b-nav-text class="col-auto px-0 mr-3">
+							<b-button size="sm" variant="outline-light" @click.prevent="sidebarOpen = !sidebarOpen">
 								<b-icon icon="list" font-scale="2" />
 							</b-button>
 						</b-nav-text>
-						<b-nav-text class="h4 ml-2 text-white">
-							GreenPost
+						<b-nav-text class="col px-0 text-center">
+							<div class="d-inline-flex text-white text-left">
+								<div class="logo">
+									<img src="@/assets/logo-white.svg" alt="" />
+								</div>
+								<div>
+									<div class="brand">
+										GREEN POST
+									</div>
+									<div class="slogan">
+										выгодная доставка из Китая
+									</div>
+								</div>
+							</div>
 						</b-nav-text>
 					</b-navbar-nav>
 				</b-navbar>
 
-				<div class="px-0 py-3 overflow-hidden">
+				<div class="px-0 py-3">
 					<b-container fluid>
 						<router-view />
 					</b-container>

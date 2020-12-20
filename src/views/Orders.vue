@@ -73,115 +73,110 @@
 			</b-tab>
 
 			<b-tab title="На складе">
-				<b-card-text>
-					<div class="table-responsive">
-						<table class="table table-sm table-bordered">
-							<tr class="table-info">
-								<th width="1" class="align-middle py-2 text-nowrap">Выбор</th>
-								<th class="align-middle py-2">Тип груза</th>
-								<th class="align-middle py-2">Дата</th>
-								<th class="align-middle py-2">Наименование товара</th>
-								<th class="align-middle py-2">Кол-во</th>
-								<th class="align-middle py-2">Ценность</th>
-								<th class="align-middle py-2">Вес</th>
-								<th class="align-middle py-2">Номер отслеживания</th>
-								<th class="align-middle py-2">Комментарий</th>
-								<th width="1" class="align-middle py-2">Услуги</th>
-								<th width="1" />
-							</tr>
-							<tr v-for="order of stockedOrders" :key="order['Номер']" :class="{'table-warning': order['СодержитБатареи'], 'table-danger': order['Несоответствие']}">
-								<td class="align-middle text-center">
-									<div class="custom-control custom-checkbox b-custom-control-lg mr-n2">
-										<input
-											type="checkbox"
-											:id="order['Номер']"
-											class="custom-control-input"
-											value="true"
-											v-model="order.checked"
-											:disabled="order.disabled"
-										/>
-										<label
-											class="custom-control-label"
-											:for="order['Номер']"
-											:title="order.disabled ? 'Нельзя объединять простые товары с опасными в одну посылку' : ''"
-										/>
-									</div>
-								</td>
-								<td class="align-middle text-center">
-									<IconConsolidation v-if="order['ТипГруза'] !== 1" />
-									<span title="Готовый груз" v-else>
-										<b-icon icon="box" font-scale="1.5" variant="success" class="my-n1" />
-									</span>
-								</td>
-								<td class="align-middle">{{order['Дата']}}</td>
-								<td class="align-middle">{{order['ВидТовара']}}</td>
-								<td class="align-middle">{{order['Количество']}}</td>
-								<td class="align-middle text-nowrap">{{order['Ценность']}}$</td>
-								<td class="align-middle text-nowrap">{{order['Вес']}} кг</td>
-								<td class="align-middle">{{order['ТрекПоступления']}}</td>
-								<td class="align-middle">{{order['Комментарий']}}</td>
-								<td class="align-middle text-nowrap">
-									<span class="mx-1" title="Проверка на соответствие" v-if="order.check">
-										<b-icon icon="search" font-scale="1.5" />
-									</span>
-									<span class="mx-1" title="Фотоотчет" v-if="order.photoReport">
-										<b-icon icon="camera" font-scale="1.5" />
-									</span>
-									<span class="mx-1" title="Переупаковка" v-if="order.repack">
-										<b-icon icon="box-seam" font-scale="1.5" />
-									</span>
-								</td>
-								<td class="align-middle text-nowrap">
-									<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}?tab=${activeTab}`">
-										<b-icon icon="eye-fill"/>
-									</b-button>
-								</td>
-							</tr>
-						</table>
-					</div>
+				<div class="table-responsive">
+					<table class="table table-sm table-bordered">
+						<tr class="table-info">
+							<th width="1" class="align-middle py-2 text-nowrap">Выбор</th>
+							<th class="align-middle py-2">Тип груза</th>
+							<th class="align-middle py-2">Дата</th>
+							<th class="align-middle py-2">Наименование товара</th>
+							<th class="align-middle py-2">Кол-во</th>
+							<th class="align-middle py-2">Ценность</th>
+							<th class="align-middle py-2">Вес</th>
+							<th class="align-middle py-2">Номер отслеживания</th>
+							<th class="align-middle py-2">Комментарий</th>
+							<th width="1" class="align-middle py-2">Услуги</th>
+							<th width="1" />
+						</tr>
+						<tr v-for="order of stockedOrders" :key="order['Номер']" :class="{'table-warning': order['СодержитБатареи'], 'table-danger': order['Несоответствие']}">
+							<td class="align-middle text-center">
+								<div class="custom-control custom-checkbox b-custom-control-lg mr-n2">
+									<input
+										type="checkbox"
+										:id="order['Номер']"
+										class="custom-control-input"
+										value="true"
+										v-model="order.checked"
+										:disabled="order.disabled"
+									/>
+									<label
+										class="custom-control-label"
+										:for="order['Номер']"
+										:title="order.disabled ? 'Нельзя объединять простые товары с опасными в одну посылку' : ''"
+									/>
+								</div>
+							</td>
+							<td class="align-middle text-center">
+								<IconConsolidation v-if="order['ТипГруза'] !== 1" />
+								<span title="Готовый груз" v-else>
+									<b-icon icon="box" font-scale="1.5" variant="success" class="my-n1" />
+								</span>
+							</td>
+							<td class="align-middle">{{order['Дата']}}</td>
+							<td class="align-middle">{{order['ВидТовара']}}</td>
+							<td class="align-middle">{{order['Количество']}}</td>
+							<td class="align-middle text-nowrap">{{order['Ценность']}}$</td>
+							<td class="align-middle text-nowrap">{{order['Вес']}} кг</td>
+							<td class="align-middle">{{order['ТрекПоступления']}}</td>
+							<td class="align-middle">{{order['Комментарий']}}</td>
+							<td class="align-middle text-nowrap">
+								<span class="mx-1" title="Проверка на соответствие" v-if="order.check">
+									<b-icon icon="search" font-scale="1.5" />
+								</span>
+								<span class="mx-1" title="Фотоотчет" v-if="order.photoReport">
+									<b-icon icon="camera" font-scale="1.5" />
+								</span>
+								<span class="mx-1" title="Переупаковка" v-if="order.repack">
+									<b-icon icon="box-seam" font-scale="1.5" />
+								</span>
+							</td>
+							<td class="align-middle text-nowrap">
+								<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}?tab=${activeTab}`">
+									<b-icon icon="eye-fill"/>
+								</b-button>
+							</td>
+						</tr>
+					</table>
+				</div>
 
-					<div class="row">
-						<div class="col-auto">
-							<b-card bg-variant="light" border-variant="info" class="d-inline-block mb-3" v-if="checkedOrders.length">
-								<b-card-text>
-									<div class="row my-n2">
-										<div class="col my-2">
-											<table class="text-nowrap">
-												<tr>
-													<td class="pr-2">Общая ценность:</td>
-													<td>
-														<b>{{ checkedOrdersPrice }}</b>$
-													</td>
-												</tr>
-												<tr>
-													<td class="pr-2">Общий вес:</td>
-													<td>
-														<b>{{ checkedOrdersWeight }}</b> кг
-													</td>
-												</tr>
-											</table>
-										</div>
-										<div class="col my-2">
-											<b-button size="lg" variant="success" class="text-nowrap" @click.prevent="() => createPackage()">
-												<b-icon icon="box"/> Оформить посылку
-											</b-button>
-										</div>
-									</div>
-								</b-card-text>
-							</b-card>
-						</div>
-						<div class="col-12 col-xl-auto ml-auto">
-							<div class="">
-								<span class="h5"><b-badge variant="warning" v-html="'&ensp;'"/></span>
-								- Товар с батарейками/жидкостями/порошками
+				<div class="position-sticky float-right d-flex justify-content-end selected-orders mb-2 mb-md-0">
+					<b-card bg-variant="light" border-variant="info" body-class="px-0 py-3" class="d-inline-block" v-if="checkedOrders.length">
+						<div class="d-xl-flex my-n2">
+							<div class="col-auto my-2">
+								<table class="text-nowrap">
+									<tr>
+										<td class="pr-2">Общая ценность:</td>
+										<td>
+											<b>{{ checkedOrdersPrice }}</b>$
+										</td>
+									</tr>
+									<tr>
+										<td class="pr-2">Общий вес:</td>
+										<td>
+											<b>{{ checkedOrdersWeight }}</b> кг
+										</td>
+									</tr>
+								</table>
 							</div>
-							<div class="">
-								<span class="h5"><b-badge variant="danger" v-html="'&ensp;'"/></span>
-								- Выявленное несоответствие
+							<div class="col-auto my-2">
+								<b-button size="lg" variant="success" class="text-nowrap" @click.prevent="() => createPackage()">
+									Оформить посылку
+								</b-button>
 							</div>
 						</div>
+					</b-card>
+				</div>
+
+				<div class="d-inline-block d-md-block">
+					<div class="">
+						<span class="h5"><b-badge variant="warning" v-html="'&ensp;'"/></span>
+						- Товар с батарейками/жидкостями/порошками
 					</div>
-				</b-card-text>
+					<div class="">
+						<span class="h5"><b-badge variant="danger" v-html="'&ensp;'"/></span>
+						- Выявленное несоответствие
+					</div>
+				</div>
 			</b-tab>
 		</b-tabs>
 
