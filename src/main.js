@@ -4,21 +4,20 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from './router'
 import store from './store'
-import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import Loader from '@/components/Loader'
 import messagePlugin from '@/utils/message.plugin'
 import dateFilter from '@/filters/date.filter'
 import './registerServiceWorker'
-
-const VueInputMask = require('vue-inputmask').default
+import maskDirective from '@/directives/mask.directive'
 
 Vue.use(VueAxios, axios)
 Vue.use(BootstrapVue)
-Vue.use(BootstrapVueIcons)
-Vue.use(VueInputMask)
+Vue.use(IconsPlugin)
 Vue.use(messagePlugin)
 Vue.component('Loader', Loader)
 Vue.filter('date', dateFilter)
+Vue.directive('mask', maskDirective)
 
 Vue.config.productionTip = false
 

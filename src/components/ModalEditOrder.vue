@@ -23,7 +23,7 @@
 							<small>Отправить в один клик</small>
 						</b-form-checkbox>
 					</div>
-					<b-icon icon="question-circle" class="my-1 align-middle" v-b-tooltip.hover title="Активируйте флажок, если желаете при поступлении товара незамедлительно переслать посылку на Ваш адрес, без возможности объединить ее с другими товарами и без проверки вложения." />
+					<BIconQuestionCircle class="my-1 align-middle" v-b-tooltip.hover="`Активируйте флажок, если желаете при поступлении товара незамедлительно переслать посылку на Ваш адрес, без возможности объединить ее с другими товарами и без проверки вложения.`" />
 				</div>
 
 				<div class="form-row form-group">
@@ -86,10 +86,10 @@
 				<div class="form-group">
 					<div class="d-inline-block mr-2 mb-1">
 						<b-form-checkbox size="lg" v-model="form.battery" switch>
-							<small>Товар с батарейками/жидкостями/порошками?</small>
+							<small>Товар с батарейками/жидкостями/порошками/магнитами?</small>
 						</b-form-checkbox>
+            <span class="avia-sg text-black-50">Авиа SG (5-7 дней)</span>
 					</div>
-					<b-icon icon="question-circle" class="my-1 align-middle" v-b-tooltip.hover title="Тип доставки зависит от опасности перевозимых товаров." />
 				</div>
 
 				<div class="form-group">
@@ -101,7 +101,7 @@
 						/>
 						<b-input-group-append>
 							<b-button size="sm" variant="info" class="ml-1" :disabled="!form.productImage" :href="form.productImage" target="_blank">
-								<b-icon icon="eye-fill"/>
+								<BIconEyeFill/>
 							</b-button>
 						</b-input-group-append>
 					</b-input-group>
@@ -125,8 +125,8 @@
 					@click="servicesVisible = !servicesVisible"
 				>
 					Дополнительные услуги
-					<b-icon icon="chevron-up" v-if="servicesVisible"/>
-					<b-icon icon="chevron-down" v-else />
+					<BIconChevronUp icon="chevron-up" v-if="servicesVisible"/>
+					<BIconChevronDown icon="chevron-down" v-else />
 				</b-button>
 				<b-collapse id="services" v-model="servicesVisible">
 					<b-card no-body class="p-2">
@@ -196,7 +196,7 @@
 					productImage: '',
 					comment: '',
 					packageId: '',
-					battery: false,
+					battery: true,
 					check: false,
 					photoReport: false,
 					originalPackage: false,
@@ -309,7 +309,7 @@
 				this.form.productImage = ''
 				this.form.comment = ''
 				this.form.packageId = ''
-				this.form.battery = false
+				this.form.battery = true
 				this.form.check = false
 				this.form.photoReport = false
 				this.form.originalPackage = false
@@ -370,3 +370,9 @@
 		}
 	}
 </script>
+
+<style>
+  .avia-sg {
+    margin-left: 2.8125rem;
+  }
+</style>

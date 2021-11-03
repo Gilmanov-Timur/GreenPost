@@ -145,3 +145,22 @@ body {
 		display: none;
 	}
 }
+
+.table-yellow {
+	background: #ffea95;
+	> th, > td {
+		background: #ffea95;
+	}
+}
+.table-orange {
+	background: #fdb172;
+	> th, > td {
+		background: #fdb172;
+	}
+}
+.table-red {
+	background: #fb9a8d;
+	> th, > td {
+		background: #fb9a8d;
+	}
+}

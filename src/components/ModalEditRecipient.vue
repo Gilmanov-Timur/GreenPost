@@ -37,6 +37,11 @@
 							required
 						/>
 					</div>
+          <div class="col-12" v-if="isInternationalPassport">
+            <div class="alert alert-danger mt-2 mb-0">
+              Загранпаспорт не подходит для сервиса
+            </div>
+          </div>
 				</div>
 
 				<div class="form-row form-group">
@@ -194,11 +199,13 @@
 					this.form.city = this.selectedRecipient['Город']
 					this.form.street = this.selectedRecipient['Улица']
 					this.form.house = this.selectedRecipient['Дом']
-					this.form.flat = this.selectedRecipient['Квартира']
+					this.form.flat = this.selectedRecipient['Квартира'] || ''
 				}
 			},
 			onSubmit() {
-				this.submitForm()
+        if (!this.isInternationalPassport) {
+          this.submitForm()
+        }
 			},
 			resetForm() {
 				Object.keys(this.form).forEach(key => this.form[key] = '')
@@ -245,8 +252,11 @@
 		computed: {
 			userId() {
 				return this.$store.getters.userInfo['ID']
-			}
-		},
+			},
+      isInternationalPassport() {
+        return this.form.passport.indexOf('FA') === 0
+      }
+    },
 		watch: {
 
 		}

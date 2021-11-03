@@ -2,8 +2,8 @@ import axios from 'axios'
 const registerToken = btoa(unescape(encodeURIComponent('default:dDhC54')))
 const authorization = token => ({'Authorization': 'Basic ' + (token ? token : localStorage.getItem('token'))})
 const baseUrl = process.env.NODE_ENV === 'production'
-	? 'https://app.greenpost.uz/Meest/hs/ws/'
-	: 'https://cors-anywhere.herokuapp.com/https://app.greenpost.uz/Meest/hs/ws/'
+	? 'https://app.greenpost.uz/GreenPost/hs/ws/'
+	: 'https://cors-anywhere.herokuapp.com/https://app.greenpost.uz/GreenPost/hs/ws/'
 
 const api = {
 	_request: null,
@@ -35,10 +35,19 @@ const api = {
 			cancelToken: this._request.token
 		})
 	},
-	getOrders({startDate, endDate} = {}) {
+	getAllOrders({startDate, endDate} = {}) {
 		this._cancelToken()
 		return axios({
-			url: baseUrl + 'listorders' + (startDate && endDate ? `?startdate=${startDate}&enddate=${endDate}` : ''),
+			url: baseUrl + 'listorders?status=all' + (startDate && endDate ? `&startdate=${startDate}&enddate=${endDate}` : ''),
+			method: 'GET',
+			headers: authorization(),
+			cancelToken: this._request.token
+		})
+	},
+	getActiveOrders() {
+		this._cancelToken()
+		return axios({
+			url: baseUrl + 'listorders?status=active',
 			method: 'GET',
 			headers: authorization(),
 			cancelToken: this._request.token

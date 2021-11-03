@@ -31,16 +31,16 @@
 					</template>
 					<b-card-text>
 						<div>
-							<b>地址:</b> 广州市白云区松洲街道罗冲围松南路13号富成大厦701室
+							<b>地址:</b> 广州市天河区龙洞街道龙湖山庄3巷6号首层
 						</div>
 						<div>
 							<b>收货人:</b> ID:{{ userInfo['ID'] }}
 						</div>
 						<div>
-							<b>邮政编码:</b> 510160
+							<b>邮政编码:</b> 510520
 						</div>
 						<div>
-							<b>手机号:</b> 18344567736
+							<b>手机号:</b> 17728037238
 						</div>
 					</b-card-text>
 				</b-card>
@@ -113,7 +113,7 @@
 				this.loading = true
 
 				try {
-					const orders = (await this.$store.dispatch('getOrders', dateRange))
+					const orders = (await this.$store.dispatch('getAllOrders', dateRange))
 						.filter(order => order['ТрекПоступления'] === this.track)
 					orders
 						.sort((a, b) => Number(b['Номер'].replace(/\D/g, '')) - Number(a['Номер'].replace(/\D/g, '')))

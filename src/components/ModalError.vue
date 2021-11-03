@@ -14,7 +14,7 @@
 		@hidden="() => $store.dispatch('clearError')"
 	>
 		<template v-slot:modal-title>
-			<b-icon icon="exclamation-triangle"/>
+			<BIconExclamationTriangle/>
 			Ошибка
 		</template>
 		<template v-slot:default>

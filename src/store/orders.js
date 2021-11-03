@@ -3,9 +3,21 @@ import api from '@/utils/api'
 
 export default {
 	actions: {
-		async getOrders({commit}, dateRange) {
+		async getAllOrders({commit}, dateRange) {
 			try {
-				const response = await api.getOrders(dateRange)
+				const response = await api.getAllOrders(dateRange)
+				return response.data
+			} catch (e) {
+				if (!axios.isCancel(e)) {
+					commit('setError', e)
+				}
+				throw e
+			}
+		},
+
+		async getActiveOrders({commit}) {
+			try {
+				const response = await api.getActiveOrders()
 				return response.data
 			} catch (e) {
 				if (!axios.isCancel(e)) {

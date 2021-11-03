@@ -33,33 +33,33 @@
 							</span>
 							</template>
 							<b-dropdown-item-button @click.prevent="$bvModal.show('modal-profile')">
-								<b-icon icon="person-fill"/> Профиль
+								<BIconPersonFill/> Профиль
 							</b-dropdown-item-button>
 							<b-dropdown-divider />
 							<b-dropdown-item-button @click.prevent="logout">
-								<b-icon icon="door-open-fill"/> Выйти
+								<BIconDoorOpenFill/> Выйти
 							</b-dropdown-item-button>
 						</b-dropdown>
 					</div>
 
 					<b-nav vertical class="cabinet-nav">
 						<b-nav-item to="/" active-class="active" exact>
-							<b-icon icon="house-door"/> ГЛАВНАЯ
+							<BIconHouseDoor/> ГЛАВНАЯ
 						</b-nav-item>
 						<b-nav-item to="/orders" active-class="active">
-							<b-icon icon="cart3"/> ТОВАРЫ
+							<BIconCart3/> ТОВАРЫ
 						</b-nav-item>
 						<b-nav-item to="/packages" active-class="active">
-							<b-icon icon="box"/> ПОСЫЛКИ
+							<BIconBox/> ПОСЫЛКИ
 						</b-nav-item>
 						<b-nav-item to="/payments" active-class="active" exact>
-							<b-icon icon="wallet2"/> РАСЧЕТЫ
+							<BIconWallet2/> РАСЧЕТЫ
 						</b-nav-item>
 						<b-nav-item to="/recipients" active-class="active" exact>
-							<b-icon icon="people"/> ПОЛУЧАТЕЛИ
+							<BIconPeople/> ПОЛУЧАТЕЛИ
 						</b-nav-item>
 						<b-nav-item to="/tickets" active-class="active" exact>
-							<b-icon icon="envelope"/> ОБРАЩЕНИЯ
+							<BIconEnvelope/> ОБРАЩЕНИЯ
 						</b-nav-item>
 					</b-nav>
 				</div>
@@ -70,7 +70,7 @@
 					<b-navbar-nav class="row align-items-center m-0 w-100">
 						<b-nav-text class="col-auto px-0 mr-3">
 							<b-button size="sm" variant="outline-light" @click.prevent="sidebarOpen = !sidebarOpen">
-								<b-icon icon="list" font-scale="2" />
+								<BIconList font-scale="2" />
 							</b-button>
 						</b-nav-text>
 						<b-nav-text class="col px-0 text-center">
@@ -104,6 +104,7 @@
 </template>
 
 <script>
+	//import {BIconPersonFill, BIconDoorOpenFill, BIconHouseDoor, BIconCart3, BIconBox, BIconWallet2, BIconPeople, BIconEnvelope, BIconList} from 'bootstrap-vue'
 	const desktopMinWidth = 992
 
 	export default {
@@ -158,7 +159,8 @@
 			},
 		},
 		components: {
-			'ModalProfile': require('@/components/ModalProfile.vue').default
+			'ModalProfile': require('@/components/ModalProfile.vue').default,
+			//BIconPersonFill, BIconDoorOpenFill, BIconHouseDoor, BIconCart3, BIconBox, BIconWallet2, BIconPeople, BIconEnvelope, BIconList
 		},
 	}
 </script>

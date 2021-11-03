@@ -40,7 +40,7 @@
 						</label>
 						<b-input-group>
 							<b-button variant="info" @click.prevent="onNewRecipient">
-								<b-icon icon="plus-circle"/> Добавить
+								<BIconPlusCircle/> Добавить
 							</b-button>
 						</b-input-group>
 					</div>

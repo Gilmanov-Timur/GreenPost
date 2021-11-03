@@ -6,7 +6,7 @@
 			</div>
 			<div class="col-auto">
 				<b-button size="lg" variant="success" @click.prevent="onNewOrder">
-					<b-icon icon="plus-circle"/> Новый товар
+					<BIconPlusCircle/> Новый товар
 				</b-button>
 			</div>
 		</div>
@@ -33,7 +33,7 @@
 								<td class="align-middle text-center">
 									<IconConsolidation v-if="order['ТипГруза'] !== 1" />
 									<span title="Готовый груз" v-else>
-										<b-icon icon="box" font-scale="1.5" variant="success" class="my-n1" />
+										<BIconBox icon="box" font-scale="1.5" variant="success" class="my-n1" />
 									</span>
 								</td>
 								<td class="align-middle">{{order['Дата']}}</td>
@@ -44,26 +44,26 @@
 								<td class="align-middle">{{order['Комментарий']}}</td>
 								<td class="align-middle text-nowrap">
 									<span class="mx-1" title="Проверка на соответствие" v-if="order.check">
-										<b-icon icon="search" font-scale="1.5" />
+										<BIconSearch icon="search" font-scale="1.5" />
 									</span>
 									<span class="mx-1" title="Фотоотчет" v-if="order.photoReport">
-										<b-icon icon="camera" font-scale="1.5" />
+										<BIconCamera icon="camera" font-scale="1.5" />
 									</span>
 									<span class="mx-1" title="Переупаковка" v-if="order.repack">
-										<b-icon icon="box-seam" font-scale="1.5" />
+										<BIconBoxSeam icon="box-seam" font-scale="1.5" />
 									</span>
 								</td>
 								<td class="align-middle text-nowrap">
 									<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}?tab=${activeTab}`">
-										<b-icon icon="eye-fill"/>
+										<BIconEyeFill/>
 									</b-button>
 
 									<b-button size="sm" variant="info" class="mx-1" :disabled="loading" @click.prevent="() => onEdit(order['Номер'])">
-										<b-icon icon="pencil-square"/>
+										<BIconPencilSquare/>
 									</b-button>
 
 									<b-button size="sm" variant="danger" class="mx-1" :disabled="loading" @click.prevent="() => onDelete(order['Номер'], order['Посылка'])">
-										<b-icon icon="trash"/>
+										<BIconTrash/>
 									</b-button>
 								</td>
 							</tr>
@@ -83,12 +83,21 @@
 							<th class="align-middle py-2">Кол-во</th>
 							<th class="align-middle py-2">Ценность</th>
 							<th class="align-middle py-2">Вес</th>
+							<th class="align-middle py-2">Объемный вес</th>
 							<th class="align-middle py-2">Номер отслеживания</th>
 							<th class="align-middle py-2">Комментарий</th>
 							<th width="1" class="align-middle py-2">Услуги</th>
 							<th width="1" />
 						</tr>
-						<tr v-for="order of stockedOrders" :key="order['Номер']" :class="{'table-warning': order['СодержитБатареи'], 'table-danger': order['Несоответствие']}">
+						<tr
+                v-for="order of stockedOrders"
+                :key="order['Номер']"
+                :class="{
+                  'table-yellow': order['СодержитБатареи'],
+                  'table-orange': order['Объемный'] > order['Вес'],
+                  'table-red': order['Несоответствие'],
+                }"
+            >
 							<td class="align-middle text-center">
 								<div class="custom-control custom-checkbox b-custom-control-lg mr-n2">
 									<input
@@ -109,7 +118,7 @@
 							<td class="align-middle text-center">
 								<IconConsolidation v-if="order['ТипГруза'] !== 1" />
 								<span title="Готовый груз" v-else>
-									<b-icon icon="box" font-scale="1.5" variant="success" class="my-n1" />
+									<BIconBox font-scale="1.5" variant="success" class="my-n1" />
 								</span>
 							</td>
 							<td class="align-middle">{{order['Дата']}}</td>
@@ -117,22 +126,23 @@
 							<td class="align-middle">{{order['Количество']}}</td>
 							<td class="align-middle text-nowrap">{{order['Ценность']}}$</td>
 							<td class="align-middle text-nowrap">{{order['Вес']}} кг</td>
+							<td class="align-middle text-nowrap">{{order['Объемный']}} кг</td>
 							<td class="align-middle">{{order['ТрекПоступления']}}</td>
 							<td class="align-middle">{{order['Комментарий']}}</td>
 							<td class="align-middle text-nowrap">
 								<span class="mx-1" title="Проверка на соответствие" v-if="order.check">
-									<b-icon icon="search" font-scale="1.5" />
+									<BIconSearch icon="search" font-scale="1.5" />
 								</span>
 								<span class="mx-1" title="Фотоотчет" v-if="order.photoReport">
-									<b-icon icon="camera" font-scale="1.5" />
+									<BIconCamera font-scale="1.5" />
 								</span>
 								<span class="mx-1" title="Переупаковка" v-if="order.repack">
-									<b-icon icon="box-seam" font-scale="1.5" />
+									<BIconBoxSeam font-scale="1.5" />
 								</span>
 							</td>
 							<td class="align-middle text-nowrap">
 								<b-button size="sm" variant="primary" class="mx-1" :disabled="loading" :to="`order-details/${order['Номер']}?tab=${activeTab}`">
-									<b-icon icon="eye-fill"/>
+									<BIconEyeFill/>
 								</b-button>
 							</td>
 						</tr>
@@ -168,14 +178,18 @@
 				</div>
 
 				<div class="d-inline-block d-md-block">
-					<div class="">
-						<span class="h5"><b-badge variant="warning" v-html="'&ensp;'"/></span>
-						- Товар с батарейками/жидкостями/порошками
+					<div>
+						<span class="h5"><b-badge class="table-yellow" v-html="'&ensp;'"/></span>
+						- Товар с батарейками/жидкостями/порошками/магнитами
 					</div>
-					<div class="">
-						<span class="h5"><b-badge variant="danger" v-html="'&ensp;'"/></span>
-						- Выявленное несоответствие
+					<div>
+						<span class="h5"><b-badge class="table-orange" v-html="'&ensp;'"/></span>
+            - Объемный вес больше фактического
 					</div>
+          <div>
+            <span class="h5"><b-badge class="badge-danger" v-html="'&ensp;'"/></span>
+            - Выявленное несоответствие
+          </div>
 				</div>
 			</b-tab>
 		</b-tabs>
@@ -192,9 +206,9 @@
 		template: `
 			<div class="d-inline-block" title="Консолидация">
 				<b-iconstack font-scale="2">
-					<b-icon stacked icon="box" variant="success" scale="0.55" shift-v="4" />
-					<b-icon stacked icon="box" variant="success" scale="0.55" shift-v="-4" shift-h="5" />
-					<b-icon stacked icon="box" variant="success" scale="0.55" shift-v="-4" shift-h="-5" />
+					<BIconBox stacked variant="success" scale="0.55" shift-v="4" />
+					<BIconBox stacked variant="success" scale="0.55" shift-v="-4" shift-h="5" />
+					<BIconBox stacked variant="success" scale="0.55" shift-v="-4" shift-h="-5" />
 				</b-iconstack>
 			</div>
 		`
@@ -212,7 +226,7 @@
 			}
 		},
 		async mounted() {
-			this.getOrders()
+			await this.getOrders()
 		},
 		beforeDestroy() {
 			this.$store.dispatch('cancelRequest')
@@ -227,7 +241,7 @@
 				this.loading = true
 
 				try {
-					const orders = await this.$store.dispatch('getOrders', dateRange)
+					const orders = await this.$store.dispatch('getActiveOrders', dateRange)
 					const filteredOrders = orders.filter(order => ['В ожидании', 'На складе'].includes(order['Статус']) && !order['ПометкаУдаления'])
 
 					filteredOrders
@@ -278,7 +292,7 @@
 
 					try {
 						await this.$store.dispatch('deleteOrder', orderId)
-						this.getOrders()
+						await this.getOrders()
 						this.$toast(`Товар ${orderId} успешно удален!`)
 					} catch (e) {
 						this.loading = false
