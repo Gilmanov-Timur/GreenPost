@@ -13,5 +13,16 @@ module.exports = {
 		iconPaths: {
 			favicon16: null,
 		}
+	},
+	devServer: {
+		proxy: {
+			'^/api': {
+				target: 'https://app.greenpost.uz',
+				changeOrigin: true,
+				pathRewrite: {
+					'^/api': ''
+				},
+			}
+		}
 	}
 }

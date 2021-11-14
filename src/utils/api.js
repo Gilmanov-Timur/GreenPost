@@ -2,14 +2,19 @@ import axios from 'axios'
 const registerToken = btoa(unescape(encodeURIComponent('default:dDhC54')))
 const authorization = token => ({'Authorization': 'Basic ' + (token ? token : localStorage.getItem('token'))})
 const baseUrl = process.env.NODE_ENV === 'production'
-	? 'https://app.greenpost.uz/GreenPost/hs/ws/'
-	: 'https://cors-anywhere.herokuapp.com/https://app.greenpost.uz/GreenPost/hs/ws/'
+	? '/GreenPost/hs/ws/'
+	: '/api/GreenPost/hs/ws/'
 
 const api = {
 	_request: null,
 	_cancelToken() {
 		this._request = axios.CancelToken.source()
 	},
+	getServiceInfo: () => axios({
+		url: baseUrl + 'catalogs',
+		method: 'GET',
+		headers: authorization(),
+	}),
 	getUserInfo: token => axios({
 		url: baseUrl + 'userinfo',
 		method: 'GET',

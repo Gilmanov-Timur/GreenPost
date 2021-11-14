@@ -4,7 +4,7 @@ import api from '@/utils/api'
 
 export default {
 	state: {
-		userInfo: {}
+		userInfo: null
 	},
 	actions: {
 		async login({commit}, {email, password}) {
@@ -70,10 +70,6 @@ export default {
 				}
 				throw e
 			}
-		},
-
-		clearUserInfo({commit}) {
-			commit('clearInfo')
 		},
 	},
 	mutations: {

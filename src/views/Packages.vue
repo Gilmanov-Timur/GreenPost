@@ -17,6 +17,7 @@
 								<tr class="table-info">
 									<th class="align-middle py-2">Дата</th>
 									<th class="align-middle py-2">Номер посылки</th>
+									<th class="align-middle py-2">Способ доставки</th>
 									<th class="align-middle py-2">Вес</th>
 									<th class="align-middle py-2">Объемный вес</th>
 									<th class="align-middle py-2">Ценность</th>
@@ -27,12 +28,13 @@
 							</thead>
 							<tbody>
 								<tr
-                    v-for="pack of processedPackages"
-                    :key="pack['Номер']"
-                    :class="{'table-orange': pack['Объемный'] > pack['ОбщийВес']}"
-                >
+									v-for="pack of processedPackages"
+									:key="pack['Номер']"
+									:class="{'table-orange': pack['Объемный'] > pack['ОбщийВес']}"
+								>
 									<td class="align-middle">{{ pack['Дата'] }}</td>
 									<td class="align-middle">{{pack['Номер']}}</td>
+									<td class="align-middle">{{parseDeliveryMethod(pack['ВидПеревозок'])}}</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщийВес']}} кг</td>
 									<td class="align-middle text-nowrap">{{pack['Объемный']}} кг</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщаяЦенность']}} $</td>
@@ -77,7 +79,7 @@
 									<th class="align-middle py-2">Номер отслеживания</th>
 									<th class="align-middle py-2">Статус</th>
 									<th class="align-middle py-2">Вес</th>
-                  <th class="align-middle py-2">Объемный вес</th>
+									<th class="align-middle py-2">Объемный вес</th>
 									<th class="align-middle py-2">Ценность</th>
 									<th class="align-middle py-2">Получатель</th>
 									<th class="align-middle py-2">Стоимость доставки</th>
@@ -87,16 +89,16 @@
 							</thead>
 							<tbody>
 								<tr
-                    v-for="pack of shippedPackages"
-                    :key="pack['Номер']"
-                    :class="{'table-orange': pack['Объемный'] > pack['ОбщийВес']}"
-                >
+									v-for="pack of shippedPackages"
+									:key="pack['Номер']"
+									:class="{'table-orange': pack['Объемный'] > pack['ОбщийВес']}"
+								>
 									<td class="align-middle">{{ pack['Дата'] }}</td>
 									<td class="align-middle">{{pack['Рейс']}}</td>
 									<td class="align-middle">{{pack['Трек']}}</td>
 									<td class="align-middle">{{pack['Статус']}}</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщийВес']}} кг</td>
-                  <td class="align-middle text-nowrap">{{pack['Объемный']}} кг</td>
+									<td class="align-middle text-nowrap">{{pack['Объемный']}} кг</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщаяЦенность']}} $</td>
 									<td class="align-middle">{{pack['Получатель']}}</td>
 									<td class="align-middle text-nowrap">
@@ -115,12 +117,12 @@
 						</table>
 					</div>
 				</b-card-text>
-        <div class="d-inline-block d-md-block">
-          <div>
-            <span class="h5"><b-badge class="table-orange" v-html="'&ensp;'"/></span>
-            - Объемный вес больше фактического
-          </div>
-        </div>
+				<div class="d-inline-block d-md-block">
+					<div>
+						<span class="h5"><b-badge class="table-orange" v-html="'&ensp;'"/></span>
+						- Объемный вес больше фактического
+					</div>
+				</div>
 			</b-tab>
 		</b-tabs>
 	</div>
@@ -200,17 +202,25 @@
 			onTabChange(index) {
 				this.$router.replace(`${this.$route.path}?tab=${index}`)
 			},
+			parseDeliveryMethod(name) {
+				const id = this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Наименование'] === name)['Код']
+				switch(id) {
+					case '000000001': return 'Авиа';
+					case '000000004': return 'Авиа SG';
+					case '000000006': return 'Авиа Express';
+				}
+			}
 		},
 		computed: {
+			serviceInfo() {
+				return this.$store.getters.serviceInfo
+			},
 			processedPackages() {
 				return this.packages.filter(pack => !['Отправлена', 'На ММПО в Ташкенте', 'Доставлена'].includes(pack['Статус']))
 			},
 			shippedPackages() {
 				return this.packages.filter(pack => ['Отправлена', 'На ММПО в Ташкенте', 'Доставлена'].includes(pack['Статус']))
 			},
-		},
-		components: {
-
 		},
 	}
 </script>

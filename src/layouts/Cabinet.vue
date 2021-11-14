@@ -2,7 +2,7 @@
 	<div class="h-100">
 		<Loader v-if="loading" />
 
-		<div class="h-100" v-if="Object.keys(userInfo).length">
+		<div class="h-100" v-if="serviceInfo && userInfo">
 			<b-sidebar
 				id="sidebar"
 				width="200px"
@@ -104,7 +104,6 @@
 </template>
 
 <script>
-	//import {BIconPersonFill, BIconDoorOpenFill, BIconHouseDoor, BIconCart3, BIconBox, BIconWallet2, BIconPeople, BIconEnvelope, BIconList} from 'bootstrap-vue'
 	const desktopMinWidth = 992
 
 	export default {
@@ -116,17 +115,24 @@
 			}
 		},
 		async mounted() {
+			const promises = []
+
 			this.$nextTick(() => {
 				window.addEventListener('resize', this.onResize);
 			})
 
-			if (Object.keys(this.userInfo).length) {
-				this.loading = false
-				return
+			promises.push(
+				this.$store.dispatch('getServiceInfo')
+			)
+
+			if (!this.userInfo) {
+				promises.push(
+					this.$store.dispatch('getUserInfo')
+				)
 			}
 
 			try {
-				await this.$store.dispatch('getUserInfo')
+				await Promise.all(promises)
 			} catch (e) {
 				if (!(e.response && e.response.status === 401)) {
 					await this.$store.dispatch('setError', 'critical-error')
@@ -139,15 +145,15 @@
 			window.removeEventListener('resize', this.onResize);
 		},
 		computed: {
+			serviceInfo() {
+				return this.$store.getters.serviceInfo
+			},
 			userInfo() {
 				return this.$store.getters.userInfo
 			},
 			balance() {
 				return this.userInfo['Баланс'].toFixed(2)
 			},
-		},
-		watch: {
-
 		},
 		methods: {
 			async logout() {
@@ -160,7 +166,6 @@
 		},
 		components: {
 			'ModalProfile': require('@/components/ModalProfile.vue').default,
-			//BIconPersonFill, BIconDoorOpenFill, BIconHouseDoor, BIconCart3, BIconBox, BIconWallet2, BIconPeople, BIconEnvelope, BIconList
 		},
 	}
 </script>

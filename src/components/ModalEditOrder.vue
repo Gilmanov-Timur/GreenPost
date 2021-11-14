@@ -196,7 +196,7 @@
 					productImage: '',
 					comment: '',
 					packageId: '',
-					battery: true,
+					battery: false,
 					check: false,
 					photoReport: false,
 					originalPackage: false,
@@ -309,7 +309,7 @@
 				this.form.productImage = ''
 				this.form.comment = ''
 				this.form.packageId = ''
-				this.form.battery = true
+				this.form.battery = false
 				this.form.check = false
 				this.form.photoReport = false
 				this.form.originalPackage = false

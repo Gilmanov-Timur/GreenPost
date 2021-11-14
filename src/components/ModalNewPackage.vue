@@ -47,6 +47,21 @@
 				</div>
 
 				<div class="form-group">
+					<label for="form-delivery-method">
+						Способ доставки
+					</label>
+					<b-input-group>
+						<b-form-select
+							id="form-delivery-method"
+							v-model="form.deliveryMethod"
+							:options="deliveryMethodOptions"
+							:disabled="deliveryMethodOptions.length === 1"
+							required
+						/>
+					</b-input-group>
+				</div>
+
+				<div class="form-group">
 					<label for="form-delivery-point">
 						Доставить до
 					</label>
@@ -59,20 +74,6 @@
 						/>
 					</b-input-group>
 				</div>
-
-				<!--<div class="form-group">
-					<label for="form-delivery-method">
-						Способ доставки
-					</label>
-					<b-input-group>
-						<b-form-select
-							id="form-delivery-method"
-							v-model="form.deliveryMethod"
-							:options="deliveryMethodOptions"
-							required
-						/>
-					</b-input-group>
-				</div>-->
 
 				<button type="submit" class="d-none" ref="submitButton" />
 			</b-form>
@@ -207,15 +208,26 @@
 				}
 
 				if (battery) {
-					deliveryMethods.push({value: '000000004', text: 'Авиа DG'})
+					deliveryMethods.push({
+						value: '000000004',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000004')['Наименование']
+					})
 				} else {
-					deliveryMethods.push({value: '000000001', text: 'Авиа'})
+					deliveryMethods.push({
+						value: '000000006',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
+					})
+					deliveryMethods.push({
+						value: '000000001',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000001')['Наименование']
+					})
 				}
 
-				deliveryMethods.push({value: '000000003', text: 'Авто'})
-
 				return deliveryMethods
-			}
+			},
+			serviceInfo() {
+				return this.$store.getters.serviceInfo
+			},
 		},
 		watch: {
 			timestamp: function () {

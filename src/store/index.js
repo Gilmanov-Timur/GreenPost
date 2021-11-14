@@ -12,10 +12,21 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
+		serviceInfo: null,
 		error: null,
 		toast: null,
 	},
 	actions: {
+		async getServiceInfo({commit}) {
+			try {
+				const response = await api.getServiceInfo()
+				commit('setServiceInfo', response.data)
+				return response.data
+			} catch (e) {
+				commit('setError', e)
+				throw e
+			}
+		},
 		setError({commit}, error) {
 			commit('setError', error)
 		},
@@ -30,6 +41,10 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
+		setServiceInfo(state, info) {
+			//const deliveryMethods = info['ВидыПеревозок']
+			state.serviceInfo = info
+		},
 		setError(state, error) {
 			let message
 
@@ -56,6 +71,7 @@ export default new Vuex.Store({
 		},
 	},
 	getters: {
+		serviceInfo: state => state.serviceInfo,
 		error: state => state.error,
 		toast: state => state.toast,
 	},
