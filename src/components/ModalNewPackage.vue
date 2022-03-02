@@ -18,32 +18,40 @@
 			<Loader v-if="loading" />
 
 			<b-form @submit.prevent="onSubmit">
-				<div class="row">
+				<div class="form-row form-group align-items-end">
 					<div class="col">
-						<div class="form-group">
-							<label for="form-recipient">
-								Получатель
-							</label>
-							<b-input-group>
-								<b-form-select
-									id="form-recipient"
-									v-model="form.recipient"
-									:options="recipientOptions"
-									required
-								/>
-							</b-input-group>
-						</div>
-					</div>
-					<div class="col-auto">
-						<label>
-							Новый получатель
+						<label for="form-recipient">
+							Получатель
 						</label>
 						<b-input-group>
-							<b-button variant="info" @click.prevent="onNewRecipient">
-								<BIconPlusCircle/> Добавить
-							</b-button>
+							<b-form-select
+								id="form-recipient"
+								v-model="form.recipient"
+								:options="recipientOptions"
+								required
+							/>
 						</b-input-group>
 					</div>
+					<div class="col-auto">
+						<b-button variant="info" @click.prevent="onEditRecipient">
+							<b-icon icon="pencil-square"/>
+							<span class="d-none d-lg-inline-block ml-2">Редактировать</span>
+						</b-button>
+					</div>
+					<div class="col-auto">
+						<b-button variant="info" @click.prevent="onNewRecipient">
+							<BIconPlusCircle/>
+							<span class="d-none d-lg-inline-block ml-2">Добавить</span>
+						</b-button>
+					</div>
+				</div>
+
+				<div class="alert alert-danger" v-if="!isRecipientPinflValid">
+					У выбранного получателя не указан ПИНФЛ
+					<BIconQuestionCircle
+						class="cursor-pointer"
+						@click="$bvModal.show('modal-pinfl')"
+					/>
 				</div>
 
 				<div class="form-group">
@@ -80,8 +88,8 @@
 		</template>
 		<template v-slot:modal-footer>
 			<div class="w-100">
-				<b-button variant="success" :disabled="!recipientOptions.length || loading" @click.prevent="onSave">
-					Сохранить
+				<b-button variant="success" :disabled="!recipientOptions.length || !isRecipientPinflValid || loading" @click.prevent="onSave">
+					Оформить
 				</b-button>
 			</div>
 		</template>
@@ -93,6 +101,7 @@
 		data() {
 			return {
 				loading: false,
+				recipients: [],
 				form: {
 					recipient: null,
 					deliveryPoint: null,
@@ -136,13 +145,16 @@
 
 				try {
 					const recipients = await this.$store.dispatch('getRecipients')
+					this.recipients = recipients
 					this.recipientOptions = recipients.map(recipient => {
 						return {
 							value: recipient['Номер'],
 							text: `${recipient['ФИО']}, ${recipient['Улица']}, ${recipient['Дом']}${recipient['Квартира'] ? ('-' + recipient['Квартира']) : ''}`
 						}
 					})
-					this.form.recipient = this.recipientOptions[0] && this.recipientOptions[0].value
+					if (!this.form.recipient) {
+						this.form.recipient = this.recipientOptions[0] && this.recipientOptions[0].value
+					}
 				} catch (e) {
 					this.$bvModal.hide('modal-new-package')
 				} finally {
@@ -194,7 +206,11 @@
 			},
 			onNewRecipient() {
 				this.$bvModal.show('modal-edit-recipient')
-			}
+			},
+			onEditRecipient() {
+				const selectedRecipient = this.recipients.find(recipient => recipient['Номер'] === this.form.recipient)
+				this.$emit('editRecipient', selectedRecipient)
+			},
 		},
 		computed: {
 			deliveryMethodOptions() {
@@ -214,12 +230,12 @@
 					})
 				} else {
 					deliveryMethods.push({
-						value: '000000006',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
-					})
-					deliveryMethods.push({
 						value: '000000001',
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000001')['Наименование']
+					})
+					deliveryMethods.push({
+						value: '000000006',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
 					})
 				}
 
@@ -228,6 +244,14 @@
 			serviceInfo() {
 				return this.$store.getters.serviceInfo
 			},
+			isRecipientPinflValid() {
+				if (this.recipients.length && this.form.recipient) {
+					const pinfl = this.recipients.find(recipient => recipient['Номер'] === this.form.recipient)['ПИНФЛ']
+					return pinfl.length === 14 && /^[1-6](0[1-9]|[12][0-9]|3[01])(0[1-9]|1[012])\d{9}$/.test(pinfl)
+				} else {
+					return true
+				}
+			}
 		},
 		watch: {
 			timestamp: function () {

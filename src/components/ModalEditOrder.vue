@@ -56,7 +56,7 @@
 					</label>
 					<div class="col">
 						<input
-							type="text"
+							type="tel"
 							id="form-product-count"
 							class="form-control"
 							v-model="form.productCount"
@@ -72,12 +72,12 @@
 					</label>
 					<div class="col">
 						<input
-							type="text"
+							type="tel"
 							id="form-product-price"
 							class="form-control"
 							ref="productPrice"
 							v-model="form.productPrice"
-							v-mask="{alias: 'numeric', digits: 2, allowMinus: false, rightAlign: false, placeholder: ''}"
+							v-mask="{alias: 'numeric', min: 1, digits: 2, allowMinus: false, rightAlign: false, placeholder: ''}"
 							required
 						/>
 					</div>
@@ -88,7 +88,7 @@
 						<b-form-checkbox size="lg" v-model="form.battery" switch>
 							<small>Товар с батарейками/жидкостями/порошками/магнитами?</small>
 						</b-form-checkbox>
-            <span class="avia-sg text-black-50">Авиа SG (5-7 дней)</span>
+						<span class="avia-sg text-black-50">Авиа SG (5-7 дней)</span>
 					</div>
 				</div>
 
@@ -174,7 +174,12 @@
 		<template v-slot:modal-footer>
 			<div class="w-100">
 				<b-button variant="success" :disabled="loading" @click.prevent="onSave">
-					Сохранить
+					<template v-if="form.readyToShip && !selectedOrder">
+						Далее
+					</template>
+					<template v-else>
+						Сохранить
+					</template>
 				</b-button>
 			</div>
 		</template>

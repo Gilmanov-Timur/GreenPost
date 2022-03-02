@@ -77,7 +77,7 @@ export default {
 			state.userInfo = userInfo
 		},
 		clearUserInfo(state) {
-			state.userInfo = {}
+			state.userInfo = null
 		}
 	},
 	getters: {

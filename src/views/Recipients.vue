@@ -3,10 +3,10 @@
 		<Loader v-if="loading" />
 
 		<div class="row">
-			<div class="col">
-				<h2 class="mb-4">Получатели</h2>
+			<div class="col mb-3">
+				<h2 class="mb-0">Получатели</h2>
 			</div>
-			<div class="col-auto">
+			<div class="col-auto mb-3">
 				<b-button size="lg" variant="success" @click.prevent="onAddRecipient">
 					<b-icon icon="plus-circle"/> Добавить получателя
 				</b-button>
@@ -57,7 +57,7 @@
 			}
 		},
 		async mounted() {
-			this.getRecipients()
+			await this.getRecipients()
 		},
 		beforeDestroy() {
 			this.$store.dispatch('cancelRequest')
@@ -67,10 +67,13 @@
 				this.loading = true
 
 				try {
-					this.recipients = await this.$store.dispatch('getRecipients')
+					const recipients = await this.$store.dispatch('getRecipients')
+					recipients.forEach(recipient => {
+						recipient['ПИНФЛ'] = recipient['ПИНФЛ'] === '0' ? '' : recipient['ПИНФЛ']
+					})
+					this.recipients = recipients
+					this.loading = false
 				} catch (e) {
-
-				} finally {
 					this.loading = false
 				}
 			},
@@ -83,8 +86,8 @@
 
 				try {
 					await this.$store.dispatch('deleteRecipient', recipientId)
-					this.getRecipients()
 					this.$toast(`Получатель ${recipientId} успешно удален!`)
+					await this.getRecipients()
 				} catch (e) {
 					this.loading = false
 				} finally {}

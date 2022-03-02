@@ -10,6 +10,17 @@ const api = {
 	_cancelToken() {
 		this._request = axios.CancelToken.source()
 	},
+	getNotifications: () => axios({
+		url: baseUrl + 'notification',
+		method: 'GET',
+		headers: authorization(),
+	}),
+	clearNotification: data => axios({
+		url: baseUrl + 'notification',
+		method: 'POST',
+		data: data,
+		headers: authorization(),
+	}),
 	getServiceInfo: () => axios({
 		url: baseUrl + 'catalogs',
 		method: 'GET',

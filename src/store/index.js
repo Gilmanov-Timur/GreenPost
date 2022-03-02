@@ -17,6 +17,24 @@ export default new Vuex.Store({
 		toast: null,
 	},
 	actions: {
+		async getNotifications({commit}) {
+			try {
+				const response = await api.getNotifications()
+				return response.data
+			} catch (e) {
+				commit('setError', e)
+				throw e
+			}
+		},
+		async clearNotification({commit}, id) {
+			try {
+				const response = await api.clearNotification(id)
+				return response.data
+			} catch (e) {
+				commit('setError', e)
+				throw e
+			}
+		},
 		async getServiceInfo({commit}) {
 			try {
 				const response = await api.getServiceInfo()

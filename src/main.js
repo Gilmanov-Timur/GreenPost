@@ -4,6 +4,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from './router'
 import store from './store'
+import i18n from './i18n'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import Loader from '@/components/Loader'
 import messagePlugin from '@/utils/message.plugin'
@@ -22,6 +23,7 @@ Vue.directive('mask', maskDirective)
 Vue.config.productionTip = false
 
 new Vue({
+	i18n,
 	router,
 	store,
 	render: h => h(App)

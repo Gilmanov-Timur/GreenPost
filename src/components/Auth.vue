@@ -21,7 +21,7 @@
 				</div>
 
 				<b-tabs card active-nav-item-class="text-success">
-					<b-tab title="Вход">
+					<b-tab :title="$t('sign-in')">
 						<b-card-text>
 							<b-form @submit.prevent="onLogin">
 								<b-form-group label="E-mail/Login:" label-for="login-email">
@@ -34,7 +34,7 @@
 									/>
 								</b-form-group>
 
-								<b-form-group label="Пароль:" label-for="login-password">
+								<b-form-group :label="$t('password') + ':'" label-for="login-password">
 									<b-form-input
 										id="login-password"
 										v-model.trim="login.password"
@@ -45,16 +45,16 @@
 								</b-form-group>
 
 								<b-button type="submit" variant="primary" :disabled="loading">
-									Войти
+									{{ $t('log-in') }}
 								</b-button>
 							</b-form>
 						</b-card-text>
 					</b-tab>
 
-					<b-tab title="Регистрация">
+					<b-tab :title="$t('registration')">
 						<b-card-text>
 							<b-form @submit.prevent="onRegister">
-								<b-form-group label="Фамилия:" label-for="register-surname">
+								<b-form-group :label="$t('surname') + ':'" label-for="register-surname">
 									<b-form-input
 										id="register-surname"
 										v-model.trim="register.surname"
@@ -64,7 +64,7 @@
 									/>
 								</b-form-group>
 
-								<b-form-group label="Имя:" label-for="register-name">
+								<b-form-group :label="$t('name') + ':'" label-for="register-name">
 									<b-form-input
 										id="register-name"
 										v-model.trim="register.name"
@@ -85,7 +85,7 @@
 									/>
 								</b-form-group>
 
-								<b-form-group label="Номер телефона:" label-for="register-phone">
+								<b-form-group :label="$t('phone-number') + ':'" label-for="register-phone">
 									<input
 										type="tel"
 										id="register-phone"
@@ -97,7 +97,7 @@
 									/>
 								</b-form-group>
 
-								<b-form-group label="Пароль:" label-for="register-password">
+								<b-form-group :label="$t('password') + ':'" label-for="register-password">
 									<b-form-input
 										id="register-password"
 										v-model.trim="register.password"
@@ -108,7 +108,7 @@
 									/>
 								</b-form-group>
 
-								<b-form-group label="Повторите пароль:" label-for="register-password2">
+								<b-form-group :label="$t('repeat-password') + ':'" label-for="register-password2">
 									<b-form-input
 										id="register-password2"
 										v-model.trim="register.password2"
@@ -118,17 +118,19 @@
 										required
 									/>
 									<b-tooltip :show.sync="register.passwordMismatch" target="register-password2" placement="topright" triggers="manual">
-										Пароли не совпадают!
+										{{ $t('password-mismatch') }}
 									</b-tooltip>
 								</b-form-group>
 
 								<b-button type="submit" variant="primary" :disabled="loading">
-									Зарегистрироваться
+									{{ $t('register') }}
 								</b-button>
 							</b-form>
 						</b-card-text>
 					</b-tab>
 				</b-tabs>
+
+				<Language class="mt-4" />
 			</div>
 		</div>
 	</b-container>
@@ -196,7 +198,6 @@
 
 				if (this.register.password !== this.register.password2) {
 					this.register.passwordMismatch = true
-					console.log('password mismatch')
 					return
 				}
 
@@ -223,6 +224,9 @@
 		},
 		watch: {
 
-		}
+		},
+		components: {
+			'Language': require('@/components/Language.vue').default,
+		},
 	}
 </script>

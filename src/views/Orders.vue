@@ -90,14 +90,14 @@
 							<th width="1" />
 						</tr>
 						<tr
-                v-for="order of stockedOrders"
-                :key="order['Номер']"
-                :class="{
-                  'table-yellow': order['СодержитБатареи'],
-                  'table-orange': order['Объемный'] > order['Вес'],
-                  'table-red': order['Несоответствие'],
-                }"
-            >
+							v-for="order of stockedOrders"
+							:key="order['Номер']"
+							:class="{
+								'table-yellow': order['СодержитБатареи'],
+								'table-orange': order['Объемный'] > order['Вес'],
+								'table-red': order['Несоответствие'],
+							}"
+						>
 							<td class="align-middle text-center">
 								<div class="custom-control custom-checkbox b-custom-control-lg mr-n2">
 									<input
@@ -195,8 +195,18 @@
 		</b-tabs>
 
 		<ModalEditOrder :selectedOrder="selectedOrder" @reloadOrders="getOrders" @createPackage="createPackage" />
-		<ModalNewPackage :checkedOrders="checkedOrders" :newOrderData="newOrderData" :timestamp="timestamp" @reloadOrders="getOrders" />
-		<ModalEditRecipient @reloadRecipients="updateTimestamp" />
+		<ModalNewPackage
+			:checkedOrders="checkedOrders"
+			:newOrderData="newOrderData"
+			:timestamp="timestamp"
+			@reloadOrders="getOrders"
+			@editRecipient="editRecipient"
+		/>
+		<ModalEditRecipient
+			:selectedRecipient="selectedRecipient"
+			@reloadRecipients="updateTimestamp"
+			@hide="selectedRecipient = null"
+		/>
 	</div>
 </template>
 
@@ -222,6 +232,7 @@
 				orders: [],
 				newOrderData: null,
 				selectedOrder: null,
+				selectedRecipient: null,
 				timestamp: null,
 			}
 		},
@@ -319,6 +330,12 @@
 			},
 			onTabChange(index) {
 				this.$router.replace(`${this.$route.path}?tab=${index}`)
+			},
+			editRecipient(selectedRecipient) {
+				this.selectedRecipient = selectedRecipient
+				this.$nextTick(() => {
+					this.$bvModal.show('modal-edit-recipient')
+				})
 			},
 		},
 		computed: {

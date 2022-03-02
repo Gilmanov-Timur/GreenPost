@@ -4,7 +4,6 @@
 
 		<div class="h-100" v-if="serviceInfo && userInfo">
 			<b-sidebar
-				id="sidebar"
 				width="200px"
 				shadow
 				no-header
@@ -14,7 +13,7 @@
 				:no-close-on-route-change="desktop"
 				v-model="sidebarOpen"
 			>
-				<div class="py-3">
+				<div class="d-flex flex-column h-100 py-3">
 					<div class="mb-3 text-center px-3">
 						<b-dropdown variant="dark">
 							<template v-slot:button-content>
@@ -29,39 +28,65 @@
 									ID: {{ userInfo.ID }}
 								</div>
 								<span class="text-white">
-								Баланс: <span :class="{'text-danger': balance < 0, 'text-success': balance > 0}">{{balance}}</span>$
-							</span>
+									{{ $t('balance') }}:
+									<span :class="{'text-danger': balance < 0, 'text-success': balance > 0}">
+										{{balance}}
+									</span>$
+								</span>
 							</template>
 							<b-dropdown-item-button @click.prevent="$bvModal.show('modal-profile')">
-								<BIconPersonFill/> Профиль
+								<BIconPersonFill/>
+								{{ $t('profile') }}
 							</b-dropdown-item-button>
 							<b-dropdown-divider />
 							<b-dropdown-item-button @click.prevent="logout">
-								<BIconDoorOpenFill/> Выйти
+								<BIconDoorOpenFill/>
+								{{ $t('exit') }}
 							</b-dropdown-item-button>
 						</b-dropdown>
 					</div>
 
 					<b-nav vertical class="cabinet-nav">
 						<b-nav-item to="/" active-class="active" exact>
-							<BIconHouseDoor/> ГЛАВНАЯ
+							<BIconHouseDoor/> {{ $t('main') }}
 						</b-nav-item>
 						<b-nav-item to="/orders" active-class="active">
-							<BIconCart3/> ТОВАРЫ
+							<BIconCart3/> {{ $t('orders') }}
 						</b-nav-item>
 						<b-nav-item to="/packages" active-class="active">
-							<BIconBox/> ПОСЫЛКИ
+							<BIconBox/> {{ $t('packages') }}
 						</b-nav-item>
 						<b-nav-item to="/payments" active-class="active" exact>
-							<BIconWallet2/> РАСЧЕТЫ
+							<BIconWallet2/> {{ $t('payments') }}
 						</b-nav-item>
 						<b-nav-item to="/recipients" active-class="active" exact>
-							<BIconPeople/> ПОЛУЧАТЕЛИ
+							<BIconPeople/> {{ $t('recipients') }}
 						</b-nav-item>
 						<b-nav-item to="/tickets" active-class="active" exact>
-							<BIconEnvelope/> ОБРАЩЕНИЯ
+							<BIconEnvelope/> {{ $t('tickets') }}
 						</b-nav-item>
 					</b-nav>
+
+					<Language />
+				</div>
+			</b-sidebar>
+
+			<b-sidebar
+				right
+				width="250px"
+				shadow
+				no-header
+				backdrop
+				bg-variant="dark"
+				text-variant="light"
+				v-model="rightSidebar"
+				sidebar-class="d-md-none"
+			>
+				<div class="py-3">
+					<div class="col">
+						<div class="h2">Контакты</div>
+					</div>
+					<Support class="flex-column contacts-sidebar" />
 				</div>
 			</b-sidebar>
 
@@ -73,7 +98,7 @@
 								<BIconList font-scale="2" />
 							</b-button>
 						</b-nav-text>
-						<b-nav-text class="col px-0 text-center">
+						<b-nav-text class="col-auto px-0 px-lg-3 text-center">
 							<div class="d-inline-flex text-white text-left">
 								<div class="logo">
 									<img src="@/assets/logo-white.svg" alt="" />
@@ -88,6 +113,19 @@
 								</div>
 							</div>
 						</b-nav-text>
+						<b-nav-text class="d-none d-md-block col-auto ml-auto pr-0">
+							<Support class="small" />
+						</b-nav-text>
+						<b-nav-text class="d-md-none col-auto ml-auto px-0">
+							<img
+								src="@/assets/phone.svg"
+								class="phone"
+								width="32"
+								height="32"
+								alt=""
+								@click="rightSidebar = !rightSidebar"
+							/>
+						</b-nav-text>
 					</b-navbar-nav>
 				</b-navbar>
 
@@ -99,6 +137,7 @@
 			</main>
 
 			<ModalProfile />
+			<ModalPinfl />
 		</div>
 	</div>
 </template>
@@ -112,6 +151,7 @@
 				loading: true,
 				sidebarOpen: window.innerWidth >= desktopMinWidth,
 				desktop: window.innerWidth >= desktopMinWidth,
+				rightSidebar: false,
 			}
 		},
 		async mounted() {
@@ -128,7 +168,12 @@
 			if (!this.userInfo) {
 				promises.push(
 					this.$store.dispatch('getUserInfo')
+						.then(() => {
+							this.getNotifications()
+						})
 				)
+			} else {
+				this.getNotifications()
 			}
 
 			try {
@@ -160,12 +205,47 @@
 				await this.$store.dispatch('logout', 'logout')
 				await this.$router.push('/auth')
 			},
+			getNotifications() {
+				this.$store.dispatch('getNotifications')
+					.then(notifications => {
+						if (Array.isArray(notifications) && notifications.length) {
+							notifications.forEach(notification => {
+								this.$bvModal.msgBoxConfirm([
+									this.$createElement('pre', {domProps: {innerHTML: notification['Содержание']}})
+								], {
+									title: notification['Заголовок'],
+									size: 'xl',
+									headerTextVariant: 'light',
+									headerBgVariant: 'info',
+									headerCloseLabel: 'Закрыть',
+									okVariant: 'info',
+									okTitle: 'Больше не показывать',
+									cancelTitle: '',
+									hideHeaderClose: false,
+									centered: true,
+									footerClass: 'justify-content-center',
+								})
+									.then(clear => {
+										if (clear) {
+											const formData = {
+												'идУведомления': notification['идУведомления']
+											}
+											this.$store.dispatch('clearNotification', formData)
+										}
+									})
+							})
+						}
+					})
+			},
 			onResize() {
 				this.desktop = window.innerWidth >= desktopMinWidth
 			},
 		},
 		components: {
 			'ModalProfile': require('@/components/ModalProfile.vue').default,
+			'ModalPinfl': require('@/components/ModalPinfl.vue').default,
+			'Support': require('@/components/Support.vue').default,
+			'Language': require('@/components/Language.vue').default,
 		},
 	}
 </script>

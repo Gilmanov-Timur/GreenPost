@@ -6,16 +6,18 @@
 			<div class="col-sm-auto">
 				<b-card class="order-search-form mb-3">
 					<template v-slot:header>
-						<div class="h3 mb-0">Отследить заказ</div>
+						<div class="h3 mb-0">
+							{{ $t('track-order') }}
+						</div>
 					</template>
 					<b-card-text>
 						<b-form @submit.prevent="onSubmit">
 							<div class="form-group mb-0">
 								<b-input-group>
-									<b-input size="lg" v-model.trim="track" :disabled="loading" placeholder="Введите номер отслеживания заказа" required />
+									<b-input v-model.trim="track" :disabled="loading" :placeholder="$t('input-track-number')" required />
 									<b-input-group-append>
-										<b-button type="submit" size="lg" variant="info" class="ml-1" :disabled="!track || loading">
-											Отследить
+										<b-button type="submit" variant="info" class="ml-1" :disabled="!track || loading">
+											{{ $t('track') }}
 										</b-button>
 									</b-input-group-append>
 								</b-input-group>
@@ -27,7 +29,7 @@
 			<div class="col-auto">
 				<b-card class="mb-3">
 					<template v-slot:header>
-						<div class="h3 mb-0">Ваш адрес в Китае</div>
+						<div class="h3 mb-0">{{ $t('your-china-address') }}</div>
 					</template>
 					<b-card-text>
 						<div>
@@ -51,12 +53,12 @@
 			<div class="table-responsive" v-if="orders.length">
 				<table class="table table-bordered">
 					<tr class="table-info">
-						<th class="align-middle">Дата</th>
-						<th class="align-middle">Наименование товара</th>
-						<th class="align-middle">Номер отслеживания</th>
-						<th class="align-middle">Поступил на склад</th>
-						<th class="align-middle">Статус</th>
-						<th class="align-middle">Посылка</th>
+						<th class="align-middle">{{ $t('date') }}</th>
+						<th class="align-middle">{{ $t('product-name') }}</th>
+						<th class="align-middle">{{ $t('tracking-number') }}</th>
+						<th class="align-middle">{{ $t('warehouse-receive') }}</th>
+						<th class="align-middle">{{ $t('status') }}</th>
+						<th class="align-middle">{{ $t('package') }}</th>
 					</tr>
 					<tr v-for="order of orders" :key="order['Номер']">
 						<td class="align-middle">
@@ -81,7 +83,7 @@
 				</table>
 			</div>
 			<b-alert show variant="warning" class="d-inline-block" v-else>
-				Заказ с указанным номером отслеживания не найден!
+				{{ $t('order-not-found') }}
 			</b-alert>
 		</div>
 	</div>
