@@ -251,3 +251,7 @@ button:empty {
 	90% {transform:rotate(5deg)}
 	100% {transform:rotate(-5deg)}
 }
+
+.tooltip .tooltip-inner {
+	white-space: pre-line;
+}

@@ -1,4 +1,6 @@
 import axios from 'axios'
+axios.defaults.headers.common['Accept'] = 'application/json'
+axios.defaults.headers.common['Content-Type'] = 'application/json'
 const registerToken = btoa(unescape(encodeURIComponent('default:dDhC54')))
 const authorization = token => ({'Authorization': 'Basic ' + (token ? token : localStorage.getItem('token'))})
 const baseUrl = process.env.NODE_ENV === 'production'

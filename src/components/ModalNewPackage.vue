@@ -220,24 +220,24 @@
 				if (this.newOrderData) {
 					battery = this.newOrderData['СодержитБатареи']
 				} else {
-					battery = this.checkedOrders.find(order => order['СодержитБатареи'])
+					battery = this.checkedOrders.some(order => order['СодержитБатареи'])
 				}
 
-				if (battery) {
-					deliveryMethods.push({
-						value: '000000004',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000004')['Наименование']
-					})
-				} else {
+				if (!battery) {
 					deliveryMethods.push({
 						value: '000000001',
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000001')['Наименование']
 					})
-					deliveryMethods.push({
-						value: '000000006',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
-					})
+					// deliveryMethods.push({
+					// 	value: '000000006',
+					// 	text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
+					// })
 				}
+
+				deliveryMethods.push({
+					value: '000000004',
+					text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000004')['Наименование']
+				})
 
 				return deliveryMethods
 			},

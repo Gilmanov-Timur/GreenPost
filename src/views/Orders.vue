@@ -1,3 +1,12 @@
+<i18n lang="json5">{
+	ru: {
+		test: 'Тестовый текст',
+	},
+	uz: {
+		test: 'Test message',
+	}
+}</i18n>
+
 <template>
 	<div>
 		<div class="row">
@@ -106,12 +115,10 @@
 										class="custom-control-input"
 										value="true"
 										v-model="order.checked"
-										:disabled="order.disabled"
 									/>
 									<label
 										class="custom-control-label"
 										:for="order['Номер']"
-										:title="order.disabled ? 'Нельзя объединять простые товары с опасными в одну посылку' : ''"
 									/>
 								</div>
 							</td>
@@ -184,12 +191,12 @@
 					</div>
 					<div>
 						<span class="h5"><b-badge class="table-orange" v-html="'&ensp;'"/></span>
-            - Объемный вес больше фактического
+            			- Объемный вес больше фактического
 					</div>
-          <div>
-            <span class="h5"><b-badge class="badge-danger" v-html="'&ensp;'"/></span>
-            - Выявленное несоответствие
-          </div>
+          			<div>
+						<span class="h5"><b-badge class="badge-danger" v-html="'&ensp;'"/></span>
+						- Выявленное несоответствие
+					</div>
 				</div>
 			</b-tab>
 		</b-tabs>
@@ -353,17 +360,6 @@
 			},
 			checkedOrdersWeight() {
 				return this.checkedOrders.reduce((sum, current) => sum + current['Вес'], 0).toFixed(2)
-			},
-		},
-		watch: {
-			checkedOrders: function (orders) {
-				if (!orders.length) {
-					this.stockedOrders.forEach(order => order.disabled = false)
-					return
-				}
-
-				const battery = orders[0]['СодержитБатареи']
-				this.stockedOrders.forEach(order => order.disabled = battery !== order['СодержитБатареи'])
 			},
 		},
 		components: {
