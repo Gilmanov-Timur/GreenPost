@@ -67,6 +67,9 @@
 							required
 						/>
 					</b-input-group>
+					<b-alert class="mt-2 px-3" style="white-space:pre-line" show>
+						{{ serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === form.deliveryMethod)['Комментарий'] }}
+					</b-alert>
 				</div>
 
 				<div class="form-group">
@@ -214,30 +217,30 @@
 		},
 		computed: {
 			deliveryMethodOptions() {
-				let battery
 				const deliveryMethods = []
+				const battery = this.newOrderData
+					? this.newOrderData['СодержитБатареи']
+					: this.checkedOrders.some(order => order['СодержитБатареи'])
 
-				if (this.newOrderData) {
-					battery = this.newOrderData['СодержитБатареи']
+				if (battery) {
+					deliveryMethods.push({
+						value: '000000004',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000004')['Наименование']
+					})
 				} else {
-					battery = this.checkedOrders.some(order => order['СодержитБатареи'])
-				}
-
-				if (!battery) {
 					deliveryMethods.push({
 						value: '000000001',
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000001')['Наименование']
 					})
-					// deliveryMethods.push({
-					// 	value: '000000006',
-					// 	text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
-					// })
+					deliveryMethods.push({
+						value: '000000006',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
+					})
+					deliveryMethods.push({
+						value: '000000009',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000009')['Наименование']
+					})
 				}
-
-				deliveryMethods.push({
-					value: '000000004',
-					text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000004')['Наименование']
-				})
 
 				return deliveryMethods
 			},

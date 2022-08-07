@@ -83,14 +83,14 @@
 					</div>
 				</div>
 
-<!--				<div class="form-group">-->
-<!--					<div class="d-inline-block mr-2 mb-1">-->
-<!--						<b-form-checkbox size="lg" v-model="form.brand" switch>-->
-<!--							<small>Товар содержит известные торговые марки или их копии?</small>-->
-<!--						</b-form-checkbox>-->
-<!--					</div>-->
-<!--					<BIconQuestionCircle class="my-1 align-middle" v-b-tooltip.hover="`- Во избежание конфискации следует отметить товары содержащие бренды или их копии.\n- Способами доставки Авиа и Auto CARGO данные товары облагаются дополнительной оплатой в размере 3 долл/кг`" />-->
-<!--				</div>-->
+				<div class="form-group">
+					<div class="d-inline-block mr-2 mb-1">
+						<b-form-checkbox size="lg" v-model="form.brand" switch>
+							<small>Товар копии Brand</small>
+						</b-form-checkbox>
+					</div>
+					<BIconQuestionCircle class="my-1 align-middle" v-b-tooltip.hover="`- Во избежание конфискации следует отметить товары содержащие бренды или их копии.\n- Способом доставки Авиа, данные товары облагаются дополнительной оплатой в размере 2 долл/кг`" />
+				</div>
 
 				<div class="form-group">
 					<div class="d-inline-block mr-2 mb-1">
@@ -247,6 +247,7 @@
 					this.form.productImage = response['Фото']
 					this.form.comment = response['Комментарий']
 					this.form.packageId = response['Посылка']
+					this.form.brand = response['ДополнительныеУслуги'].find(option => option['Услуга'] === '000001003')['Заказать']
 					this.form.battery = response['СодержитБатареи']
 					this.form.check = !!options.check
 					this.form.photoReport = !!options.photoReport
@@ -276,6 +277,7 @@
 					'Ценность': this.form.productPrice,
 					'Фото': this.form.productImage,
 					'Комментарий': this.form.comment,
+					'КопииBRAND': this.form.brand,
 					'СодержитБатареи': this.form.battery,
 					"ПроверкаНаСоответсвие": this.form.check,
 					"Фотоотчет": this.form.photoReport,
@@ -323,6 +325,7 @@
 				this.form.productImage = ''
 				this.form.comment = ''
 				this.form.packageId = ''
+				this.form.brand = false
 				this.form.battery = false
 				this.form.check = false
 				this.form.photoReport = false

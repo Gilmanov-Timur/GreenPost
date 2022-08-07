@@ -104,12 +104,32 @@
 					</div>
 				</div>
 
-				<div class="form-row form-group">
+				<div
+					class="form-row form-group"
+					v-if="form.region !== 'город Ташкент'"
+				>
 					<label for="form-city" class="col-5 col-form-label">
 						Город <span class="text-danger">*</span>
 					</label>
 					<div class="col">
 						<b-input id="form-city" v-model.trim="form.city" required />
+					</div>
+				</div>
+
+				<div
+					class="form-row form-group"
+					v-if="form.region === 'город Ташкент'"
+				>
+					<label for="form-district" class="col-5 col-form-label">
+						Район <span class="text-danger">*</span>
+					</label>
+					<div class="col">
+						<b-form-select
+							id="form-district"
+							v-model="form.district"
+							:options="districtOptions"
+							required
+						/>
 					</div>
 				</div>
 
@@ -169,50 +189,40 @@
 					phone: '',
 					region: '',
 					city: '',
+					district: '',
 					street: '',
 					house: '',
 					flat: '',
 				},
 				regionOptions: [
-					{
-						value: 'Андижанская область', text: 'Андижанская область',
-					},
-					{
-						value: 'Бухарска область', text: 'Бухарска область',
-					},
-					{
-						value: 'Джизакская область', text: 'Джизакская область',
-					},
-					{
-						value: 'Кашкадарьинская область', text: 'Кашкадарьинская область',
-					},
-					{
-						value: 'Навоийская область', text: 'Навоийская область',
-					},
-					{
-						value: 'Наманганская область', text: 'Наманганская область',
-					},
-					{
-						value: 'Самаркандская область', text: 'Самаркандская область',
-					},
-					{
-						value: 'Сурхандарьинская область', text: 'Сурхандарьинская область',
-					},
-					{
-						value: 'Сырдарьинская область', text: 'Сырдарьинская область',
-					},
-					{
-						value: 'Ташкентская область', text: 'Ташкентская область',
-					},
-					{
-						value: 'Ферганская область', text: 'Ферганская область',
-					},
-					{
-						value: 'Хорезмская область', text: 'Хорезмская область',
-					},
-					{
-						value: 'Республика Каракалпакстан', text: 'Республика Каракалпакстан',
-					},
+					//{value: 'город Ташкент', text: 'город Ташкент'},
+					{value: 'Андижанская область', text: 'Андижанская область'},
+					{value: 'Бухарска область', text: 'Бухарска область'},
+					{value: 'Джизакская область', text: 'Джизакская область'},
+					{value: 'Кашкадарьинская область', text: 'Кашкадарьинская область'},
+					{value: 'Навоийская область', text: 'Навоийская область'},
+					{value: 'Наманганская область', text: 'Наманганская область'},
+					{value: 'Самаркандская область', text: 'Самаркандская область'},
+					{value: 'Сурхандарьинская область', text: 'Сурхандарьинская область'},
+					{value: 'Сырдарьинская область', text: 'Сырдарьинская область'},
+					{value: 'Ташкентская область', text: 'Ташкентская область'},
+					{value: 'Ферганская область', text: 'Ферганская область'},
+					{value: 'Хорезмская область', text: 'Хорезмская область'},
+					{value: 'Республика Каракалпакстан', text: 'Республика Каракалпакстан'},
+				],
+				districtOptions: [
+					{value: 'Алмазарский район', text: 'Алмазарский район'},
+					{value: 'Бектемирский район', text: 'Бектемирский район'},
+					{value: 'Мирабадский район', text: 'Мирабадский район'},
+					{value: 'Мирзо-Улугбекский район', text: 'Мирзо-Улугбекский район'},
+					{value: 'Сергелийский район', text: 'Сергелийский район'},
+					{value: 'Учтепинский район', text: 'Учтепинский район'},
+					{value: 'Чиланзарский район', text: 'Чиланзарский район'},
+					{value: 'Шайхантахурский район', text: 'Шайхантахурский район'},
+					{value: 'Юнусабадский район', text: 'Юнусабадский район'},
+					{value: 'Яккасарайский район', text: 'Яккасарайский район'},
+					{value: 'Янгихаётский район', text: 'Янгихаётский район'},
+					{value: 'Яшнабадский район', text: 'Яшнабадский район'},
 				]
 			}
 		},
@@ -229,6 +239,7 @@
 					this.form.phone = this.selectedRecipient['Телефон']
 					this.form.region = this.selectedRecipient['Область']
 					this.form.city = this.selectedRecipient['Город']
+					this.form.district = this.selectedRecipient['Район']
 					this.form.street = this.selectedRecipient['Улица']
 					this.form.house = this.selectedRecipient['Дом']
 					this.form.flat = this.selectedRecipient['Квартира'] || ''
@@ -253,13 +264,20 @@
 					'НомерПолучателя': this.form.recipientId,
 					'НомерСтраны': '000000001',
 					'Область': this.form.region,
-					'Город': this.form.city,
+					//'Город': this.form.city,
+					//'Район': this.form.district,
 					'Улица': this.form.street,
 					'Дом': this.form.house,
 					'Квартира': this.form.flat,
 					'Телефон': this.form.phone,
 					'СерияНомерПаспорта': this.form.passport,
 					'ПИНФЛ': this.form.pinfl,
+				}
+
+				if (this.form.region === 'город Ташкент') {
+					formData['Район'] = this.form.district
+				} else {
+					formData['Город'] = this.form.city
 				}
 
 				this.loading = true
