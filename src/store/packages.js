@@ -1,12 +1,16 @@
 import axios from 'axios'
+import moment from 'moment'
 import api from '@/utils/api'
 
 export default {
 	actions: {
 		async getPackages({commit}, dateRange) {
 			try {
-				const response = await api.getPackages(dateRange)
-				return response.data
+				const packages = (await api.getPackages(dateRange)).data
+				packages.forEach(pack => {
+					pack.timestamp = moment(pack['Дата'], 'DD.MM.YYYY hh:mm:ss').toDate().getTime()
+				})
+				return packages
 			} catch (e) {
 				if (!axios.isCancel(e)) {
 					commit('setError', e)

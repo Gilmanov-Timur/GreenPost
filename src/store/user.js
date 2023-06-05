@@ -11,7 +11,7 @@ export default {
 			const token = btoa(unescape(encodeURIComponent(`${email}:${password}`)))
 
 			try {
-				const response = await api.getUserInfo(token)
+				const response = await api.getUserInfo({email, password, token})
 				localStorage.setItem('token', token)
 				commit('setUserInfo', response.data)
 				return response.data

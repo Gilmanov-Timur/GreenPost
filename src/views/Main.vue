@@ -33,7 +33,7 @@
 					</template>
 					<b-card-text>
 						<div>
-							<b>地址:</b> 广州市天河区龙洞街道龙湖山庄3巷6号首层
+							<b>地址:</b> 广州市天河区龙洞街道龙湖山庄3巷6号首层 ID:{{ userInfo['ID'] }}
 						</div>
 						<div>
 							<b>收货人:</b> ID:{{ userInfo['ID'] }}

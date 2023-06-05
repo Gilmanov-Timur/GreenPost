@@ -4,7 +4,8 @@ axios.defaults.headers.common['Content-Type'] = 'application/json'
 const registerToken = btoa(unescape(encodeURIComponent('default:dDhC54')))
 const authorization = token => ({'Authorization': 'Basic ' + (token ? token : localStorage.getItem('token'))})
 const baseUrl = process.env.NODE_ENV === 'production'
-	? '/GreenPost/hs/ws/'
+	? '/GreenPost/hs/ws/' //prod
+	//? 'https://cors-anywhere.herokuapp.com/https://app.greenpost.uz/GreenPost/hs/ws/' //test
 	: '/api/GreenPost/hs/ws/'
 
 const api = {
@@ -28,11 +29,21 @@ const api = {
 		method: 'GET',
 		headers: authorization(),
 	}),
-	getUserInfo: token => axios({
-		url: baseUrl + 'userinfo',
-		method: 'GET',
-		headers: authorization(token),
-	}),
+	getUserInfo: ({email: username, password, token} = {}) => {
+		if (username) {
+			return axios.get(baseUrl + 'userinfo', {
+				auth: {
+					username,
+					password,
+				}
+			})
+		}
+		return axios({
+			url: baseUrl + 'userinfo',
+			method: 'GET',
+			headers: authorization(token),
+		})
+	},
 	updateUserInfo({token, formData}) {
 		this._cancelToken()
 		return axios({
@@ -221,6 +232,11 @@ const api = {
 			cancelToken: this._request.token
 		})
 	},
+	getCategoriesList: () => axios({
+		url: baseUrl + 'listcategories',
+		method: 'GET',
+		headers: authorization(),
+	}),
 	cancelRequest() {
 		if (this._request) {
 			this._request.cancel()

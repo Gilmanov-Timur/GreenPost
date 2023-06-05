@@ -50,7 +50,7 @@
 											class="mx-1"
 											:disabled="loading"
 											@click.prevent="() => onDelete(pack['Номер'], pack['НомерГотовыйГруз'])"
-											v-if="pack['Статус'] === 'В обработке'"
+											v-if="pack['Статус'] === 'В ожидании'"
 										>
 											<b-icon icon="trash"/>
 										</b-button>
@@ -155,7 +155,7 @@
 
 				try {
 					const packages = await this.$store.dispatch('getPackages', dateRange)
-					packages.sort((a, b) => Number(b['Номер']) - Number(a['Номер']))
+					packages.sort((a, b) => b.timestamp - a.timestamp)
 					this.packages = packages
 				} catch (e) {} finally {
 					this.loading = false

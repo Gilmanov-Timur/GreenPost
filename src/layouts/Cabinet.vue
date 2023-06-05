@@ -164,6 +164,9 @@
 			promises.push(
 				this.$store.dispatch('getServiceInfo')
 			)
+			promises.push(
+				this.$store.dispatch('getCategoriesList')
+			)
 
 			if (!this.userInfo) {
 				promises.push(

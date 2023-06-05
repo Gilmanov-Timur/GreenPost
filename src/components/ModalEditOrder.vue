@@ -42,6 +42,35 @@
 				</div>
 
 				<div class="form-row form-group">
+					<label for="form-category" class="col-6 col-form-label">
+						Категория <span class="text-danger">*</span>
+					</label>
+					<div class="col">
+						<b-form-select
+							id="form-category"
+							v-model="form.category"
+							:options="categoryOptions"
+							required
+						/>
+					</div>
+				</div>
+
+				<div class="form-row form-group">
+					<label for="form-subcategory" class="col-6 col-form-label">
+						Подкатегория <span class="text-danger">*</span>
+					</label>
+					<div class="col">
+						<b-form-select
+							id="form-subcategory"
+							v-model="form.subcategory"
+							:options="subcategoryOptions"
+							:disabled="!form.category"
+							required
+						/>
+					</div>
+				</div>
+
+				<div class="form-row form-group">
 					<label for="form-product-name" class="col-6 col-form-label">
 						Наименование товара <span class="text-danger">*</span>
 					</label>
@@ -94,7 +123,7 @@
 
 				<div class="form-group">
 					<div class="d-inline-block mr-2 mb-1">
-						<b-form-checkbox size="lg" v-model="form.battery" switch>
+						<b-form-checkbox size="lg" v-model="form.battery" switch :disabled="isDG">
 							<small>Товар с батарейками/жидкостями/порошками/магнитами?</small>
 						</b-form-checkbox>
 					</div>
@@ -182,7 +211,7 @@
 		<template v-slot:modal-footer>
 			<div class="w-100">
 				<b-button variant="success" :disabled="loading" @click.prevent="onSave">
-					<template v-if="form.readyToShip && !selectedOrder">
+					<template v-if="form.readyToShip">
 						Далее
 					</template>
 					<template v-else>
@@ -204,6 +233,8 @@
 					productId: '',
 					trackNumber: '',
 					productName: '',
+					category: '',
+					subcategory: '',
 					productCount: '',
 					productPrice: '',
 					productImage: '',
@@ -254,6 +285,21 @@
 					this.form.originalPackage = !!options.originalPackage
 					this.form.readyToShip = response['ОтправитьСразу']
 					this.form.repack = !!options.repack
+
+					if (response['УИДПодкатегории']) {
+						const cat = this.categoriesList?.find(category => {
+							return !!category['Подкатегории'].find(subcategory => subcategory['УИДПодкатегории'] === response['УИДПодкатегории'])
+						})
+
+						if (!cat) {
+							return
+						}
+
+						this.form.category = cat['Категория']
+						this.$nextTick(() => {
+							this.form.subcategory = response['УИДПодкатегории']
+						})
+					}
 				} catch (e) {
 					this.$bvModal.hide('modal-edit-order')
 				} finally {
@@ -273,6 +319,7 @@
 					'Трек': this.form.trackNumber,
 					'ВидТовара': this.form.productName,
 					'КатегорияТовара': '',
+					'УИДПодкатегории': this.form.subcategory,
 					'Количество': this.form.productCount,
 					'Ценность': this.form.productPrice,
 					'Фото': this.form.productImage,
@@ -319,6 +366,8 @@
 			resetForm() {
 				this.form.productId = ''
 				this.form.trackNumber = ''
+				this.form.category = ''
+				this.form.subcategory = ''
 				this.form.productName = ''
 				this.form.productCount = ''
 				this.form.productPrice = ''
@@ -370,6 +419,37 @@
 			userId() {
 				return this.$store.getters.userInfo['ID']
 			},
+			categoriesList() {
+				return this.$store.getters.categoriesList
+			},
+			categoryOptions() {
+				return this.categoriesList?.map(category => {
+					return {
+						value: category['Категория'],
+						text: category['Категория'],
+					}
+				})
+			},
+			subcategoryOptions() {
+				const category = this.categoriesList?.find(category => {
+					return category['Категория'] === this.form.category
+				})
+				return category?.['Подкатегории'].map(category => {
+					return {
+						value: category['УИДПодкатегории'],
+						text: category['Наименование'],
+					}
+				})
+			},
+			isDG() {
+				const category = this.categoriesList?.find(category => {
+					return category['Категория'] === this.form.category
+				})
+				const subcategory = category?.['Подкатегории'].find(subcategory => {
+					return subcategory['УИДПодкатегории'] === this.form.subcategory
+				})
+				return subcategory?.DG
+			},
 		},
 		watch: {
 			'form.check': function (checked) {
@@ -383,7 +463,15 @@
 				} else {
 					this.form.repack = false
 				}
-			}
+			},
+			'form.category': function() {
+				this.form.subcategory = ''
+			},
+			isDG: function(dangerous) {
+				if (dangerous) {
+					this.form.battery = true
+				}
+			},
 		}
 	}
 </script>

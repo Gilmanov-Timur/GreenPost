@@ -13,6 +13,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
 		serviceInfo: null,
+		categoriesList: null,
 		error: null,
 		toast: null,
 	},
@@ -45,6 +46,16 @@ export default new Vuex.Store({
 				throw e
 			}
 		},
+		async getCategoriesList({commit}) {
+			try {
+				const response = await api.getCategoriesList()
+				commit('setCategoriesList', response.data)
+				return response.data
+			} catch (e) {
+				commit('setError', e)
+				throw e
+			}
+		},
 		setError({commit}, error) {
 			commit('setError', error)
 		},
@@ -62,6 +73,9 @@ export default new Vuex.Store({
 		setServiceInfo(state, info) {
 			//const deliveryMethods = info['ВидыПеревозок']
 			state.serviceInfo = info
+		},
+		setCategoriesList(state, categories) {
+			state.categoriesList = categories
 		},
 		setError(state, error) {
 			let message
@@ -90,6 +104,7 @@ export default new Vuex.Store({
 	},
 	getters: {
 		serviceInfo: state => state.serviceInfo,
+		categoriesList: state => state.categoriesList,
 		error: state => state.error,
 		toast: state => state.toast,
 	},

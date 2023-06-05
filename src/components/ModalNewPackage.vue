@@ -216,16 +216,26 @@
 			},
 		},
 		computed: {
+			categoriesList() {
+				return this.$store.getters.categoriesList
+			},
 			deliveryMethodOptions() {
+				const subcategory = !!this.newOrderData
+					? this.categoriesList?.map(category => category['Подкатегории']).flat().find(subcategory => subcategory['УИДПодкатегории'] === this.newOrderData['УИДПодкатегории'])
+					: null
 				const deliveryMethods = []
-				const battery = this.newOrderData
-					? this.newOrderData['СодержитБатареи']
+				const battery = !!this.newOrderData
+					? this.newOrderData['СодержитБатареи'] || subcategory?.DG
 					: this.checkedOrders.some(order => order['СодержитБатареи'])
 
 				if (battery) {
 					deliveryMethods.push({
 						value: '000000004',
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000004')['Наименование']
+					})
+					deliveryMethods.push({
+						value: '000000009',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000009')['Наименование']
 					})
 				} else {
 					deliveryMethods.push({
@@ -237,8 +247,8 @@
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
 					})
 					deliveryMethods.push({
-						value: '000000009',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000009')['Наименование']
+						value: '000000010',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000010')['Наименование']
 					})
 				}
 
