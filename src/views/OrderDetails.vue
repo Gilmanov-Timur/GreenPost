@@ -18,7 +18,7 @@
 				<table class="table table-bordered table-striped">
 					<tr>
 						<td>Наименование товара</td>
-						<td>{{ order['ВидТовара'] }}</td>
+						<td>{{productName || order['ВидТовара'] }}</td>
 					</tr>
 					<tr>
 						<td>Номер отслеживания</td>
@@ -133,6 +133,14 @@
 				})
 
 				return services
+			}
+		},
+		computed: {
+			productName() {
+				const product = this.$store.getters.skuList?.find(product => {
+					return product['УИДТовара'] === this.order['УИДТовара']
+				})
+				return product ? product['НаименованиеТовара'] : ''
 			}
 		}
 	}

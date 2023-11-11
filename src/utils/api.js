@@ -196,7 +196,7 @@ const api = {
 	getTicketDetails(id) {
 		this._cancelToken()
 		return axios({
-			url: baseUrl + '/ticket?id=' + id,
+			url: baseUrl + 'ticket?id=' + id,
 			method: 'GET',
 			headers: authorization(),
 			cancelToken: this._request.token
@@ -215,7 +215,7 @@ const api = {
 	sendTicketMessage(data) {
 		this._cancelToken()
 		return axios({
-			url: baseUrl + '/ticketaddmessage',
+			url: baseUrl + 'ticketaddmessage',
 			method: 'POST',
 			data: data,
 			headers: authorization(),
@@ -225,7 +225,7 @@ const api = {
 	closeTicket(data) {
 		this._cancelToken()
 		return axios({
-			url: baseUrl + '/ticketclose',
+			url: baseUrl + 'ticketclose',
 			method: 'POST',
 			data: data,
 			headers: authorization(),
@@ -234,6 +234,11 @@ const api = {
 	},
 	getCategoriesList: () => axios({
 		url: baseUrl + 'listcategories',
+		method: 'GET',
+		headers: authorization(),
+	}),
+	getSkuList: () => axios({
+		url: baseUrl + 'sku',
 		method: 'GET',
 		headers: authorization(),
 	}),

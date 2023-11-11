@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import vSelect from 'vue-select'
 import router from './router'
 import store from './store'
 import i18n from './i18n'
@@ -17,6 +18,7 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(messagePlugin)
 Vue.component('Loader', Loader)
+Vue.component('v-select', vSelect)
 Vue.filter('date', dateFilter)
 Vue.directive('mask', maskDirective)
 

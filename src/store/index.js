@@ -14,6 +14,7 @@ export default new Vuex.Store({
 	state: {
 		serviceInfo: null,
 		categoriesList: null,
+		skuList: null,
 		error: null,
 		toast: null,
 	},
@@ -56,6 +57,16 @@ export default new Vuex.Store({
 				throw e
 			}
 		},
+		async getSkuList({commit}) {
+			try {
+				const response = await api.getSkuList()
+				commit('setSkuList', response.data)
+				return response.data
+			} catch (e) {
+				commit('setError', e)
+				throw e
+			}
+		},
 		setError({commit}, error) {
 			commit('setError', error)
 		},
@@ -76,6 +87,9 @@ export default new Vuex.Store({
 		},
 		setCategoriesList(state, categories) {
 			state.categoriesList = categories
+		},
+		setSkuList(state, skuList) {
+			state.skuList = skuList
 		},
 		setError(state, error) {
 			let message
@@ -105,6 +119,7 @@ export default new Vuex.Store({
 	getters: {
 		serviceInfo: state => state.serviceInfo,
 		categoriesList: state => state.categoriesList,
+		skuList: state => state.skuList,
 		error: state => state.error,
 		toast: state => state.toast,
 	},

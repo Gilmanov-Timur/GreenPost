@@ -26,8 +26,8 @@
 					<BIconQuestionCircle class="my-1 align-middle" v-b-tooltip.hover="`Активируйте флажок, если желаете при поступлении товара незамедлительно переслать посылку на Ваш адрес, без возможности объединить ее с другими товарами и без проверки вложения.`" />
 				</div>
 
-				<div class="form-row form-group">
-					<label for="form-track-number" class="col-6 col-form-label">
+				<div class="form-row form-group mb-1 mb-sm-3">
+					<label class="col-sm-6 col-form-label" for="form-track-number">
 						Номер для отслеживания <span class="text-danger">*</span>
 					</label>
 					<div class="col">
@@ -41,46 +41,68 @@
 					</div>
 				</div>
 
-				<div class="form-row form-group">
-					<label for="form-category" class="col-6 col-form-label">
-						Категория <span class="text-danger">*</span>
+				<div class="form-row form-group mb-1 mb-sm-3">
+					<label class="col-sm-6 col-form-label" for="form-category">
+						Категория
 					</label>
 					<div class="col">
 						<b-form-select
 							id="form-category"
 							v-model="form.category"
 							:options="categoryOptions"
-							required
 						/>
 					</div>
 				</div>
 
-				<div class="form-row form-group">
-					<label for="form-subcategory" class="col-6 col-form-label">
-						Подкатегория <span class="text-danger">*</span>
+				<div class="form-row form-group mb-1 mb-sm-3">
+					<label class="col-sm-6 col-form-label" for="form-subcategory">
+						Подкатегория
 					</label>
 					<div class="col">
 						<b-form-select
+							ref="subcategory"
 							id="form-subcategory"
 							v-model="form.subcategory"
 							:options="subcategoryOptions"
 							:disabled="!form.category"
-							required
 						/>
 					</div>
 				</div>
 
-				<div class="form-row form-group">
-					<label for="form-product-name" class="col-6 col-form-label">
+				<div class="form-row form-group mb-1 mb-sm-3">
+					<label class="col-sm-6 col-form-label" for="form-product-name">
 						Наименование товара <span class="text-danger">*</span>
 					</label>
 					<div class="col">
-						<b-input id="form-product-name" v-model="form.productName" required />
+						<v-select
+							v-model="form.productCode"
+							:options="productCodeOptions"
+							:reduce="product => product.code"
+						>
+							<template #search="{attributes, events}">
+								<input
+									id="form-product-name"
+									class="vs__search form-control"
+									:required="!form.productCode"
+									:readonly="form.productCode"
+									v-bind="attributes"
+									v-on="events"
+								/>
+							</template>
+							<template #open-indicator="{ attributes }">
+								<span v-bind="attributes">
+									<svg xmlns="http://www.w3.org/2000/svg" width="8" height="10" viewBox="0 0 4 5"><path fill="#343a40" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>
+								</span>
+							</template>
+							<template #no-options="{ search, searching, loading }">
+								<div class="pt-1">Товары не найдены</div>
+							</template>
+						</v-select>
 					</div>
 				</div>
 
-				<div class="form-row form-group">
-					<label for="form-product-count" class="col-6 col-form-label">
+				<div class="form-row form-group mb-1 mb-sm-3">
+					<label class="col-sm-6 col-form-label" for="form-product-count">
 						Количество <span class="text-danger">*</span>
 					</label>
 					<div class="col">
@@ -96,7 +118,7 @@
 				</div>
 
 				<div class="form-row form-group">
-					<label for="form-product-price" class="col-6 col-form-label">
+					<label class="col-sm-6 col-form-label" for="form-product-price">
 						Ценность в $ <span class="text-danger">*</span>
 					</label>
 					<div class="col">
@@ -211,7 +233,7 @@
 		<template v-slot:modal-footer>
 			<div class="w-100">
 				<b-button variant="success" :disabled="loading" @click.prevent="onSave">
-					<template v-if="form.readyToShip">
+					<template v-if="form.readyToShip && !selectedOrder">
 						Далее
 					</template>
 					<template v-else>
@@ -232,7 +254,7 @@
 				form: {
 					productId: '',
 					trackNumber: '',
-					productName: '',
+					productCode: '',
 					category: '',
 					subcategory: '',
 					productCount: '',
@@ -272,7 +294,6 @@
 
 					this.form.productId = response['Номер']
 					this.form.trackNumber = response['Трек']
-					this.form.productName = response['ВидТовара']
 					this.form.productCount = response['Количество']
 					this.form.productPrice = response['Ценность']
 					this.form.productImage = response['Фото']
@@ -300,6 +321,10 @@
 							this.form.subcategory = response['УИДПодкатегории']
 						})
 					}
+
+					setTimeout(() => {
+						this.form.productCode = response['УИДТовара']
+					}, 0)
 				} catch (e) {
 					this.$bvModal.hide('modal-edit-order')
 				} finally {
@@ -317,7 +342,7 @@
 					'НомерЗаказа': this.form.productId,
 					'НомерСклада': '000000001',
 					'Трек': this.form.trackNumber,
-					'ВидТовара': this.form.productName,
+					'УИДТовара': this.form.productCode,
 					'КатегорияТовара': '',
 					'УИДПодкатегории': this.form.subcategory,
 					'Количество': this.form.productCount,
@@ -368,7 +393,7 @@
 				this.form.trackNumber = ''
 				this.form.category = ''
 				this.form.subcategory = ''
-				this.form.productName = ''
+				this.form.productCode = null
 				this.form.productCount = ''
 				this.form.productPrice = ''
 				this.form.productImage = ''
@@ -422,6 +447,9 @@
 			categoriesList() {
 				return this.$store.getters.categoriesList
 			},
+			skuList() {
+				return this.$store.getters.skuList
+			},
 			categoryOptions() {
 				return this.categoriesList?.map(category => {
 					return {
@@ -438,6 +466,26 @@
 					return {
 						value: category['УИДПодкатегории'],
 						text: category['Наименование'],
+					}
+				})
+			},
+			productCodeOptions() {
+				let skuList = this.skuList
+
+				if (this.form.subcategory) {
+					skuList = skuList?.filter(product => {
+						return product['УИДПодкатегории'] === this.form.subcategory
+					})
+				} else if (this.form.category) {
+					skuList = skuList?.filter(product => {
+						return product['Категория'] === this.form.category
+					})
+				}
+
+				return skuList.map(product => {
+					return {
+						label: product['НаименованиеТовара'],
+						code: product['УИДТовара'],
 					}
 				})
 			},
@@ -466,6 +514,38 @@
 			},
 			'form.category': function() {
 				this.form.subcategory = ''
+			},
+			'form.subcategory': function(subcategory) {
+				const product = this.skuList.find(product => product['УИДТовара'] === this.form.productCode)
+
+				if (!product) {
+					return
+				}
+
+				if (product['УИДПодкатегории'] !== subcategory) {
+					this.form.productCode = null
+				}
+			},
+			'form.productCode': function(productCode) {
+				const product = this.skuList.find(product => product['УИДТовара'] === productCode)
+
+				if (!product) {
+					return
+				}
+
+				if (!this.form.category) {
+					const category = this.categoriesList.find(category => category['Категория'] === product['Категория'])
+
+					if (category) {
+						this.form.category = category['Категория']
+					}
+				}
+
+				if (!this.form.subcategory) {
+					setTimeout(() => {
+						this.form.subcategory = product['УИДПодкатегории']
+					}, 0)
+				}
 			},
 			isDG: function(dangerous) {
 				if (dangerous) {

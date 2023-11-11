@@ -1,6 +1,6 @@
 <template>
 	<div id="app" class="h-100">
-		<router-view/>
+		<router-view />
 		<ModalError :error="error" />
 	</div>
 </template>
@@ -55,4 +55,5 @@
 	@import '~bootstrap/scss/bootstrap';
 	@import '~bootstrap-vue';
 	@import 'assets/styles';
+	@import 'vue-select/dist/vue-select.css';
 </style>

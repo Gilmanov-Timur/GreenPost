@@ -26,7 +26,7 @@
 						<b-input-group>
 							<b-form-select
 								id="form-recipient"
-								v-model="form.recipient"
+								v-model="form.recipientId"
 								:options="recipientOptions"
 								required
 							/>
@@ -100,13 +100,14 @@
 </template>
 
 <script>
+import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 	export default {
 		data() {
 			return {
 				loading: false,
 				recipients: [],
 				form: {
-					recipient: null,
+					recipientId: null,
 					deliveryPoint: null,
 					deliveryMethod: null,
 				},
@@ -137,9 +138,8 @@
 				await this.$store.dispatch('cancelRequest')
 			},
 			resetForm() {
-				this.form.recipient = null
+				this.form.recipientId = null
 				this.recipientOptions = []
-				// this.form.recipient = this.recipientOptions[0] && this.recipientOptions[0].value
 				this.form.deliveryPoint = this.deliveryPointOptions[0].value
 				this.form.deliveryMethod = this.deliveryMethodOptions[0].value
 			},
@@ -155,8 +155,8 @@
 							text: `${recipient['ФИО']}, ${recipient['Улица']}, ${recipient['Дом']}${recipient['Квартира'] ? ('-' + recipient['Квартира']) : ''}`
 						}
 					})
-					if (!this.form.recipient) {
-						this.form.recipient = this.recipientOptions[0] && this.recipientOptions[0].value
+					if (!this.form.recipientId) {
+						this.form.recipientId = this.recipientOptions[0] && this.recipientOptions[0].value
 					}
 				} catch (e) {
 					this.$bvModal.hide('modal-new-package')
@@ -173,7 +173,7 @@
 			async submitForm() {
 				const formData = {
 					'НомерПосылки': '',
-					"НомерПолучателя": this.form.recipient,
+					"НомерПолучателя": this.form.recipientId,
 					'НомерСклада': '000000001',
 					'НомерВидаПеревозок': this.form.deliveryMethod,
 					'НомерУслугиПосылки': this.form.deliveryPoint,
@@ -182,25 +182,36 @@
 
 				this.loading = true
 
-				if (this.newOrderData) {
-					try {
+				try {
+					if (!this.selectedRecipient['ДатаРождения']) {
+						await this.$store.dispatch('updateRecipient', {
+							'ФИО': this.selectedRecipient['ФИО'],
+							'НомерПолучателя': this.selectedRecipient['Номер'],
+							'НомерСтраны': '000000001',
+							'Область': this.selectedRecipient['Область'],
+							'Город': this.selectedRecipient['Город'],
+							'Улица': this.selectedRecipient['Улица'],
+							'Дом': this.selectedRecipient['Дом'],
+							'Квартира': this.selectedRecipient['Квартира'] || '',
+							'Телефон': this.selectedRecipient['Телефон'],
+							'СерияНомерПаспорта': this.selectedRecipient['СерияНомерПаспорта'],
+							'ПИНФЛ': this.selectedRecipient['ПИНФЛ'],
+							'ДатаРождения': getBirthdateFromPinfl(this.selectedRecipient['ПИНФЛ']),
+						})
+					}
+
+					if (this.newOrderData) {
 						const response = await this.$store.dispatch('updateOrder', this.newOrderData)
 						formData['НомераЗаказов'] = [response['НомерЗаказа']]
 						this.$toast(`Заказ ${response['НомерЗаказа']} успешно создан!`)
-					} catch (e) {
-						this.loading = false
-					} finally {}
-				}
+					}
 
-				try {
 					const response = await this.$store.dispatch('updatePackage', formData)
 					this.$bvModal.hide('modal-new-package')
 					this.$bvModal.hide('modal-edit-order')
 					this.$emit('reloadOrders')
 					this.$toast(`Посылка ${response['НомерПосылки']} успешно создана!`)
-					try {
-						await this.$store.dispatch('getUserInfo')
-					} catch (e) {}
+					await this.$store.dispatch('getUserInfo')
 				} catch (e) {
 
 				} finally {
@@ -211,8 +222,7 @@
 				this.$bvModal.show('modal-edit-recipient')
 			},
 			onEditRecipient() {
-				const selectedRecipient = this.recipients.find(recipient => recipient['Номер'] === this.form.recipient)
-				this.$emit('editRecipient', selectedRecipient)
+				this.$emit('editRecipient', this.selectedRecipient)
 			},
 		},
 		computed: {
@@ -257,10 +267,13 @@
 			serviceInfo() {
 				return this.$store.getters.serviceInfo
 			},
+			selectedRecipient() {
+				return this.recipients?.find(recipient => recipient['Номер'] === this.form.recipientId)
+			},
 			isRecipientPinflValid() {
-				if (this.recipients.length && this.form.recipient) {
-					const pinfl = this.recipients.find(recipient => recipient['Номер'] === this.form.recipient)['ПИНФЛ']
-					return pinfl.length === 14 && /^[1-6](0[1-9]|[12][0-9]|3[01])(0[1-9]|1[012])\d{9}$/.test(pinfl)
+				if (this.recipients.length && this.form.recipientId) {
+					const pinfl = this.selectedRecipient['ПИНФЛ']
+					return isPinflCorrect(pinfl)
 				} else {
 					return true
 				}

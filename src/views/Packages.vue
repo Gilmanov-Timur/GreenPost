@@ -34,7 +34,7 @@
 								>
 									<td class="align-middle">{{ pack['Дата'] }}</td>
 									<td class="align-middle">{{pack['Номер']}}</td>
-									<td class="align-middle">{{parseDeliveryMethod(pack['ВидПеревозок'])}}</td>
+									<td class="align-middle">{{pack['ВидПеревозок']}}</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщийВес']}} кг</td>
 									<td class="align-middle text-nowrap">{{pack['Объемный']}} кг</td>
 									<td class="align-middle text-nowrap">{{pack['ОбщаяЦенность']}} $</td>
@@ -203,11 +203,13 @@
 				this.$router.replace(`${this.$route.path}?tab=${index}`)
 			},
 			parseDeliveryMethod(name) {
-				const id = this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Наименование'] === name)['Код']
+				const id = this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Наименование'] === name)?.['Код']
 				switch(id) {
 					case '000000001': return 'Авиа';
 					case '000000004': return 'Авиа SG';
 					case '000000006': return 'Авиа Express';
+					case '000000009': return 'Cargo';
+					case '000000010': return 'Cargo';
 				}
 			}
 		},

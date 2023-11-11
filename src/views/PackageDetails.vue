@@ -56,7 +56,7 @@
 					</thead>
 					<tbody>
 						<tr v-for="(order, index) in pack['Заказы']" :key="index">
-							<td>{{ order['видТовара'] }}</td>
+							<td>{{ order['НаименованиеТовара'] || order['видТовара'] }}</td>
 							<td>{{ order['количество'] }}</td>
 							<td>{{ order['вес'] }} кг</td>
 							<td>{{ order['ценность'] }}$</td>

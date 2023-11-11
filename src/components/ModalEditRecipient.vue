@@ -176,6 +176,7 @@
 </template>
 
 <script>
+import {getBirthdateFromPinfl, isPinflCorrect} from '@/utils/functions'
 	export default {
 		data() {
 			return {
@@ -272,6 +273,7 @@
 					'Телефон': this.form.phone,
 					'СерияНомерПаспорта': this.form.passport,
 					'ПИНФЛ': this.form.pinfl,
+					'ДатаРождения': getBirthdateFromPinfl(this.form.pinfl),
 				}
 
 				if (this.form.region === 'город Ташкент') {
@@ -290,7 +292,7 @@
 				} catch (e) {} finally {
 					this.loading = false
 				}
-			}
+			},
 		},
 		computed: {
 			userId() {
@@ -300,7 +302,7 @@
 				return this.form.passport.indexOf('FA') === 0
 			},
 			isPinflValid() {
-				return this.form.pinfl.length === 14 && /^[1-6](0[1-9]|[12][0-9]|3[01])(0[1-9]|1[012])\d{9}$/.test(this.form.pinfl)
+				return isPinflCorrect(this.form.pinfl)
 			}
 		},
 	}

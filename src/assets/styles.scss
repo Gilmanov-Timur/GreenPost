@@ -255,3 +255,89 @@ button:empty {
 .tooltip .tooltip-inner {
 	white-space: pre-line;
 }
+
+.vs__dropdown-toggle:focus-within {
+	border-color: #80bdff;
+	border-bottom-left-radius: 0.25rem;
+	border-bottom-right-radius: 0.25rem;
+	box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.vs__search.form-control {
+	padding-top: 0;
+	padding-bottom: 0;
+	height: 28px;
+	border: 0;
+	box-shadow: none;
+}
+
+.vs__selected-options {
+	padding: 0;
+	width: 100%;
+}
+
+.vs__selected {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	margin-top: 6px;
+	padding: 0 0.5rem;
+	max-width: calc(100% - 2rem);
+	height: 26px;
+	color: #495057;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.vs__selected + .vs__search {
+	position: absolute;
+	left: 0;
+	top: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.vs--open .vs__search {
+	position: relative;
+}
+
+.vs__clear {
+	position: relative;
+	top: -4px;
+}
+
+.vs__dropdown-menu {
+	padding: 0;
+}
+
+.vs__dropdown-option {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	white-space: normal;
+}
+
+.vs__actions {
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding-right: 1.25rem;
+	height: 100%;
+}
+
+.vs__open-indicator {
+	position: absolute;
+	z-index: 1;
+	right: 13px;
+	top: 50%;
+	margin-top: -5px;
+	width: 8px;
+	height: 10px;
+}
+
+.vs__open-indicator svg {
+	display: block;
+}
+
+.vs--open .vs__open-indicator {
+	transform: none;
+}

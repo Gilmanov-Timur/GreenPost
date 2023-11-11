@@ -46,7 +46,7 @@
 									</span>
 								</td>
 								<td class="align-middle">{{order['Дата']}}</td>
-								<td class="align-middle">{{order['ВидТовара']}}</td>
+								<td class="align-middle">{{order['НаименованиеТовара'] || order['ВидТовара']}}</td>
 								<td class="align-middle">{{order['Количество']}}</td>
 								<td class="align-middle text-nowrap">{{order['Ценность']}}$</td>
 								<td class="align-middle">{{order['ТрекПоступления']}}</td>
@@ -131,7 +131,7 @@
 								</span>
 							</td>
 							<td class="align-middle">{{order['Дата']}}</td>
-							<td class="align-middle">{{order['ВидТовара']}}</td>
+							<td class="align-middle">{{order['НаименованиеТовара'] || order['ВидТовара']}}</td>
 							<td class="align-middle">{{order['Количество']}}</td>
 							<td class="align-middle text-nowrap">{{order['Ценность']}}$</td>
 							<td class="align-middle text-nowrap">{{order['Вес']}} кг</td>
