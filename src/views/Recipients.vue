@@ -19,8 +19,9 @@
 					<th>#</th>
 					<th>ФИО</th>
 					<th>Номер телефона</th>
-					<th>Область</th>
-					<th>Город</th>
+					<th>Регион</th>
+					<th>Район (Город)</th>
+					<th>Населенный пункт</th>
 					<th>Улица</th>
 					<th>Дом/квартира</th>
 					<th>Управление</th>
@@ -30,6 +31,7 @@
 					<td>{{recipient['ФИО']}}</td>
 					<td>{{recipient['Телефон']}}</td>
 					<td>{{recipient['Область']}}</td>
+					<td>{{recipient['Район']}}</td>
 					<td>{{recipient['Город']}}</td>
 					<td>{{recipient['Улица']}}</td>
 					<td>{{recipient['Дом']}}{{recipient['Квартира'] ? ('-' + recipient['Квартира']) : ''}}</td>

@@ -54,6 +54,10 @@
 					/>
 				</div>
 
+				<div class="alert alert-danger" v-if="!isRecipientAddressValid">
+					Обновите адрес получателя
+				</div>
+
 				<div class="form-group">
 					<label for="form-delivery-method">
 						Способ доставки
@@ -91,7 +95,11 @@
 		</template>
 		<template v-slot:modal-footer>
 			<div class="w-100">
-				<b-button variant="success" :disabled="!recipientOptions.length || !isRecipientPinflValid || loading" @click.prevent="onSave">
+				<b-button
+					variant="success"
+					:disabled="!recipientOptions.length || !isRecipientPinflValid || !isRecipientAddressValid || loading"
+					@click.prevent="onSave"
+				>
 					Оформить
 				</b-button>
 			</div>
@@ -150,9 +158,12 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 					const recipients = await this.$store.dispatch('getRecipients')
 					this.recipients = recipients
 					this.recipientOptions = recipients.map(recipient => {
+						const isValid = !!recipient['Район']
 						return {
 							value: recipient['Номер'],
-							text: `${recipient['ФИО']}, ${recipient['Улица']}, ${recipient['Дом']}${recipient['Квартира'] ? ('-' + recipient['Квартира']) : ''}`
+							text: isValid
+								? `${recipient['ФИО']}, ${recipient['Область']}, ${recipient['Район']}, ${recipient['Город'] ? (recipient['Город'] + ', ') : ''}${recipient['Улица']}, ${recipient['Дом']}${recipient['Квартира'] ? ('-' + recipient['Квартира']) : ''}`
+								: `${recipient['ФИО']}, [Обновите адрес]`
 						}
 					})
 					if (!this.form.recipientId) {
@@ -244,6 +255,10 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000004')['Наименование']
 					})
 					deliveryMethods.push({
+						value: '000000003',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000003')['Наименование']
+					})
+					deliveryMethods.push({
 						value: '000000009',
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000009')['Наименование']
 					})
@@ -257,10 +272,19 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
 					})
 					deliveryMethods.push({
+						value: '000000003',
+						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000003')['Наименование']
+					})
+					deliveryMethods.push({
 						value: '000000010',
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000010')['Наименование']
 					})
 				}
+
+				deliveryMethods.push({
+					value: '000000011',
+					text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000011')['Наименование']
+				})
 
 				return deliveryMethods
 			},
@@ -277,7 +301,14 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 				} else {
 					return true
 				}
-			}
+			},
+			isRecipientAddressValid() {
+				if (this.recipients.length && this.form.recipientId) {
+					return !!this.selectedRecipient['Район']
+				} else {
+					return true
+				}
+			},
 		},
 		watch: {
 			timestamp: function () {

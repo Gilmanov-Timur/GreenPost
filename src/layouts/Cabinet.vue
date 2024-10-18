@@ -217,7 +217,10 @@
 						if (Array.isArray(notifications) && notifications.length) {
 							notifications.forEach(notification => {
 								this.$bvModal.msgBoxConfirm([
-									this.$createElement('pre', {domProps: {innerHTML: notification['Содержание']}})
+									this.$createElement('pre', {
+										domProps: {innerHTML: notification['Содержание']},
+										style: {'white-space': 'pre-wrap'}
+									})
 								], {
 									title: notification['Заголовок'],
 									size: 'xl',
