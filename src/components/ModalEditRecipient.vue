@@ -181,7 +181,6 @@
 <script>
 	import addresses from '@/assets/addresses.json'
 
-	console.log(addresses)
 	import {getBirthdateFromPinfl, isPinflCorrect} from '@/utils/functions'
 	const formDefaultData = {
 		recipientId: '',

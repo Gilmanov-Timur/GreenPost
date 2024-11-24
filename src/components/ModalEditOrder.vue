@@ -101,6 +101,13 @@
 					</div>
 				</div>
 
+				<div
+					v-if="productsWithSim.includes(form.productCode)"
+					class="alert alert-info"
+				>
+					Уважаемый пользователь! Для регистрацией IMEI товаров содержащих SIM-карту, были активированы услуги "Проверка на соответствие" и "Фотоотчёт" стоимостью 1.5$. Если  для вашего устройства не нужна регистрация IMEI, вы можете отключить эти услуги.
+				</div>
+
 				<div class="form-row form-group mb-1 mb-sm-3">
 					<label class="col-sm-6 col-form-label" for="form-product-count">
 						Количество <span class="text-danger">*</span>
@@ -270,6 +277,12 @@
 					readyToShip: false,
 					repack: false,
 				},
+				productsWithSim: [
+					'd93039dd-1335-11ee-bb2e-b42e99cdbe6f',
+					'ec2a35fd-1345-11ee-bb2e-b42e99cdbe6f',
+					'de15a578-1330-11ee-bb2e-b42e99cdbe6f',
+					'32c04b9d-132e-11ee-bb2e-b42e99cdbe6f'
+				]
 			}
 		},
 		props: ['selectedOrder'],
@@ -545,6 +558,13 @@
 					setTimeout(() => {
 						this.form.subcategory = product['УИДПодкатегории']
 					}, 0)
+				}
+
+				if (this.productsWithSim.includes(productCode)) {
+					this.form.readyToShip = false;
+					this.servicesVisible = true;
+					this.form.check = true;
+					this.form.photoReport = true;
 				}
 			},
 			isDG: function(dangerous) {

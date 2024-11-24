@@ -205,7 +205,7 @@
 
 		<ModalEditOrder :selectedOrder="selectedOrder" @reloadOrders="getOrders" @createPackage="createPackage" />
 		<ModalNewPackage
-			:checkedOrders="checkedOrders"
+			:checkedOrders="newOrderData ? null : checkedOrders"
 			:newOrderData="newOrderData"
 			:timestamp="timestamp"
 			@reloadOrders="getOrders"
@@ -371,8 +371,14 @@
 					return
 				}
 
-				const battery = orders[0]['СодержитБатареи']
-				this.stockedOrders.forEach(order => order.disabled = battery !== order['СодержитБатареи'])
+				const hasBattery = !!orders.find(order => order['СодержитБатареи'])
+				const isBrandCopy = !!orders.find(order => order['ДополнительныеУслуги'].includes('Копии BRAND'))
+
+				this.stockedOrders.forEach(order => {
+					if (hasBattery !== order['СодержитБатареи'] || isBrandCopy !== order['ДополнительныеУслуги'].includes('Копии BRAND')) {
+						order.disabled = true
+					}
+				})
 			},
 		},
 		components: {

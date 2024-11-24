@@ -188,7 +188,7 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 					'НомерСклада': '000000001',
 					'НомерВидаПеревозок': this.form.deliveryMethod,
 					'НомерУслугиПосылки': this.form.deliveryPoint,
-					'НомераЗаказов': this.checkedOrders.map(order => order['Номер'])
+					'НомераЗаказов': this.checkedOrders?.map(order => order['Номер']) || ''
 				}
 
 				this.loading = true
@@ -263,10 +263,12 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000009')['Наименование']
 					})
 				} else {
-					deliveryMethods.push({
-						value: '000000001',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000001')['Наименование']
-					})
+					if (!!this.newOrderData && !this.newOrderData['КопииBRAND'] || !this.newOrderData && this.checkedOrders.every(order => !order['ДополнительныеУслуги'].includes('Копии BRAND'))) {
+						deliveryMethods.push({
+							value: '000000001',
+							text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000001')['Наименование']
+						})
+					}
 					deliveryMethods.push({
 						value: '000000006',
 						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
