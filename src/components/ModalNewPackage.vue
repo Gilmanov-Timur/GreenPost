@@ -120,17 +120,6 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 					deliveryMethod: null,
 				},
 				recipientOptions: [],
-				deliveryPointOptions: [
-					{
-						value: '000000001', text: 'Отделение GreenPost, г. Ташкент',
-					},
-					{
-						value: '000000003', text: 'Адресная доставка, г. Ташкент',
-					},
-					{
-						value: '000000004', text: 'Адресная доставка, регионы',
-					},
-				],
 			}
 		},
 		props: ['checkedOrders', 'newOrderData', 'timestamp'],
@@ -310,6 +299,23 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 				} else {
 					return true
 				}
+			},
+			deliveryPointOptions() {
+				const validCodes = ['000000001', '000000008', '000000009', '000000003', '000000004'];
+				const filteredPoints = [];
+
+				validCodes.forEach(code => {
+					const point = this.serviceInfo?.['УслугиПосылок'].find(service => service['Код'] === code)
+
+					if (point) {
+						filteredPoints.push({
+							value: point['Код'],
+							text: point['Наименование']
+						})
+					}
+				});
+
+				return filteredPoints;
 			},
 		},
 		watch: {
