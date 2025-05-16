@@ -264,11 +264,11 @@ button:empty {
 }
 
 .vs__search.form-control {
-	padding-top: 0;
-	padding-bottom: 0;
+	padding: 0 0.75rem;
 	height: 28px;
 	border: 0;
 	box-shadow: none;
+	background-color: #fff;
 }
 
 .vs__selected-options {
@@ -281,7 +281,7 @@ button:empty {
 	position: relative;
 	overflow: hidden;
 	margin-top: 6px;
-	padding: 0 0.5rem;
+	padding: 0 0.5625rem;
 	max-width: calc(100% - 2rem);
 	height: 26px;
 	color: #495057;

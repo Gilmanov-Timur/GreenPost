@@ -27,7 +27,7 @@
 				</div>
 
 				<div class="form-row form-group mb-1 mb-sm-3">
-					<label class="col-sm-6 col-form-label" for="form-track-number">
+					<label class="col-sm-6 col-form-label">
 						Номер для отслеживания <span class="text-danger">*</span>
 					</label>
 					<div class="col">
@@ -37,40 +37,43 @@
 							class="form-control"
 							v-model.trim="form.trackNumber"
 							v-mask="{regex: '\\S*'}"
-						required />
-					</div>
-				</div>
-
-				<div class="form-row form-group mb-1 mb-sm-3">
-					<label class="col-sm-6 col-form-label" for="form-category">
-						Категория
-					</label>
-					<div class="col">
-						<b-form-select
-							id="form-category"
-							v-model="form.category"
-							:options="categoryOptions"
+							required
 						/>
 					</div>
 				</div>
 
-				<div class="form-row form-group mb-1 mb-sm-3">
-					<label class="col-sm-6 col-form-label" for="form-subcategory">
-						Подкатегория
-					</label>
-					<div class="col">
-						<b-form-select
-							ref="subcategory"
-							id="form-subcategory"
-							v-model="form.subcategory"
-							:options="subcategoryOptions"
-							:disabled="!form.category"
-						/>
+				<template v-if="form.showCategories">
+					<div class="form-row form-group mb-1 mb-sm-3">
+						<label class="col-sm-6 col-form-label">
+							Категория
+						</label>
+						<div class="col">
+							<b-form-select
+								id="form-category"
+								v-model="form.category"
+								:options="categoryOptions"
+							/>
+						</div>
 					</div>
-				</div>
+
+					<div class="form-row form-group mb-1 mb-sm-3">
+						<label class="col-sm-6 col-form-label">
+							Подкатегория
+						</label>
+						<div class="col">
+							<b-form-select
+								ref="subcategory"
+								id="form-subcategory"
+								v-model="form.subcategory"
+								:options="subcategoryOptions"
+								:disabled="!form.category"
+							/>
+						</div>
+					</div>
+				</template>
 
 				<div class="form-row form-group mb-1 mb-sm-3">
-					<label class="col-sm-6 col-form-label" for="form-product-name">
+					<label class="col-sm-6 col-form-label">
 						Наименование товара <span class="text-danger">*</span>
 					</label>
 					<div class="col">
@@ -85,6 +88,7 @@
 									class="vs__search form-control"
 									:required="!form.productCode"
 									:readonly="form.productCode"
+									placeholder="Введите наименование для поиска"
 									v-bind="attributes"
 									v-on="events"
 								/>
@@ -98,6 +102,16 @@
 								<div class="pt-1">Товары не найдены</div>
 							</template>
 						</v-select>
+						<b-form-text>
+							<b-form-checkbox
+								size="lg"
+								v-model="form.showCategories"
+								switch
+								@change="onChangeCategoriesVisibility"
+							>
+								<small style="font-size: 16px">Поиск по категориям</small>
+							</b-form-checkbox>
+						</b-form-text>
 					</div>
 				</div>
 
@@ -158,7 +172,10 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<div
+					v-if="form.check"
+					class="form-group"
+				>
 					<label for="form-product-image">Ссылка на фотографию товара</label>
 					<b-input-group>
 						<b-input
@@ -274,8 +291,9 @@
 					check: false,
 					photoReport: false,
 					originalPackage: false,
-					readyToShip: false,
+					readyToShip: true,
 					repack: false,
+					showCategories: false,
 				},
 				productsWithSim: [
 					'd93039dd-1335-11ee-bb2e-b42e99cdbe6f',
@@ -417,8 +435,9 @@
 				this.form.check = false
 				this.form.photoReport = false
 				this.form.originalPackage = false
-				this.form.readyToShip = false
+				this.form.readyToShip = true
 				this.form.repack = false
+				this.form.showCategories = false
 			},
 			async onHide() {
 				await this.$store.dispatch('cancelRequest')
@@ -451,6 +470,11 @@
 				})
 
 				return services
+			},
+			onChangeCategoriesVisibility() {
+				this.form.productCode = null;
+				this.form.category = '';
+				this.form.subcategory = '';
 			}
 		},
 		computed: {

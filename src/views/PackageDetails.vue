@@ -3,7 +3,7 @@
 		<Loader v-if="loading" />
 		<div class="row mb-4 mx-n2">
 			<div class="col-auto px-2">
-				<router-link :to="backUrl ? backUrl : '/packages?tab=' + activeTab">
+				<router-link :to="backUrl ? backUrl : '/packages'">
 					<b-icon icon="arrow-left-circle" font-scale="2" variant="info" />
 				</router-link>
 			</div>
@@ -79,7 +79,6 @@
 			return {
 				packageId: this.$route.params.id,
 				backUrl: this.$route.params.backUrl,
-				activeTab: this.$route.query && Number(this.$route.query.tab) || 0,
 				loading: true,
 				pack: []
 			}
