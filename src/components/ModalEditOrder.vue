@@ -115,6 +115,19 @@
 					</div>
 				</div>
 
+				<div class="form-row form-group">
+					<div class="d-none d-sm-block col-6">
+						&nbsp;
+					</div>
+					<div class="col mt-2 mt-sm-0">
+						<b-input
+							v-model="form.productName"
+							placeholder="Опишите подробное наименование товара"
+							required
+						/>
+					</div>
+				</div>
+
 				<div
 					v-if="productsWithSim.includes(form.productCode)"
 					class="alert alert-info"
@@ -281,6 +294,7 @@
 					productCode: '',
 					category: '',
 					subcategory: '',
+					productName: '',
 					productCount: '',
 					productPrice: '',
 					productImage: '',
@@ -300,7 +314,8 @@
 					'ec2a35fd-1345-11ee-bb2e-b42e99cdbe6f',
 					'de15a578-1330-11ee-bb2e-b42e99cdbe6f',
 					'32c04b9d-132e-11ee-bb2e-b42e99cdbe6f'
-				]
+				],
+				unwatchers: []
 			}
 		},
 		props: ['selectedOrder'],
@@ -308,9 +323,13 @@
 
 		},
 		methods: {
-			onShow() {
-				this.resetForm()
-				this.getOrderData()
+			async onShow() {
+				this.resetForm();
+				await this.getOrderData();
+
+				setTimeout(() => {
+					this.initWatchers();
+				}, 0)
 			},
 			async getOrderData() {
 				if (!this.selectedOrder) {
@@ -325,6 +344,7 @@
 
 					this.form.productId = response['Номер']
 					this.form.trackNumber = response['Трек']
+					this.form.productName = response['ВидТовара']
 					this.form.productCount = response['Количество']
 					this.form.productPrice = response['Ценность']
 					this.form.productImage = response['Фото']
@@ -376,6 +396,7 @@
 					'УИДТовара': this.form.productCode,
 					'КатегорияТовара': '',
 					'УИДПодкатегории': this.form.subcategory,
+					'ВидТовара': this.form.productName,
 					'Количество': this.form.productCount,
 					'Ценность': this.form.productPrice,
 					'Фото': this.form.productImage,
@@ -425,6 +446,7 @@
 				this.form.category = ''
 				this.form.subcategory = ''
 				this.form.productCode = null
+				this.form.productName = ''
 				this.form.productCount = ''
 				this.form.productPrice = ''
 				this.form.productImage = ''
@@ -440,7 +462,8 @@
 				this.form.showCategories = false
 			},
 			async onHide() {
-				await this.$store.dispatch('cancelRequest')
+				this.unwatchers.forEach(unwatch => unwatch());
+				await this.$store.dispatch('cancelRequest');
 			},
 			transformOptions(options = []) {
 				const services = {}
@@ -475,6 +498,73 @@
 				this.form.productCode = null;
 				this.form.category = '';
 				this.form.subcategory = '';
+			},
+			initWatchers() {
+				this.unwatchers.push(this.$watch('form.check', function (checked) {
+					if (!checked) {
+						this.form.photoReport = false
+					}
+				}));
+
+				this.unwatchers.push(this.$watch('form.readyToShip', function (checked) {
+					if (checked) {
+						this.form.check = false
+					} else {
+						this.form.repack = false
+					}
+				}));
+
+				this.unwatchers.push(this.$watch('form.category', function() {
+					this.form.subcategory = ''
+				}));
+
+				this.unwatchers.push(this.$watch('form.subcategory', function(subcategory) {
+					const product = this.skuList.find(product => product['УИДТовара'] === this.form.productCode)
+
+					if (!product) {
+						return
+					}
+
+					if (product['УИДПодкатегории'] !== subcategory) {
+						this.form.productCode = null
+					}
+				}));
+
+				this.unwatchers.push(this.$watch('form.productCode', function(productCode) {
+					console.log(productCode)
+					const product = this.skuList.find(product => product['УИДТовара'] === productCode)
+
+					if (!product) {
+						return
+					}
+
+					if (!this.form.category) {
+						const category = this.categoriesList.find(category => category['Категория'] === product['Категория'])
+
+						if (category) {
+							this.form.category = category['Категория']
+						}
+					}
+
+					if (!this.form.subcategory) {
+						setTimeout(() => {
+							this.form.subcategory = product['УИДПодкатегории']
+						}, 0)
+					}
+
+					if (this.productsWithSim.includes(productCode)) {
+						this.form.readyToShip = false;
+						this.servicesVisible = true;
+						this.form.check = true;
+						this.form.photoReport = true;
+					}
+				}));
+
+				this.unwatchers.push(this.$watch('isDG', function(dangerous) {
+					if (dangerous) {
+						this.form.battery = true
+					}
+				}));
 			}
 		},
 		computed: {
@@ -536,67 +626,6 @@
 				return subcategory?.DG
 			},
 		},
-		watch: {
-			'form.check': function (checked) {
-				if (!checked) {
-					this.form.photoReport = false
-				}
-			},
-			'form.readyToShip': function (checked) {
-				if (checked) {
-					this.form.check = false
-				} else {
-					this.form.repack = false
-				}
-			},
-			'form.category': function() {
-				this.form.subcategory = ''
-			},
-			'form.subcategory': function(subcategory) {
-				const product = this.skuList.find(product => product['УИДТовара'] === this.form.productCode)
-
-				if (!product) {
-					return
-				}
-
-				if (product['УИДПодкатегории'] !== subcategory) {
-					this.form.productCode = null
-				}
-			},
-			'form.productCode': function(productCode) {
-				const product = this.skuList.find(product => product['УИДТовара'] === productCode)
-
-				if (!product) {
-					return
-				}
-
-				if (!this.form.category) {
-					const category = this.categoriesList.find(category => category['Категория'] === product['Категория'])
-
-					if (category) {
-						this.form.category = category['Категория']
-					}
-				}
-
-				if (!this.form.subcategory) {
-					setTimeout(() => {
-						this.form.subcategory = product['УИДПодкатегории']
-					}, 0)
-				}
-
-				if (this.productsWithSim.includes(productCode)) {
-					this.form.readyToShip = false;
-					this.servicesVisible = true;
-					this.form.check = true;
-					this.form.photoReport = true;
-				}
-			},
-			isDG: function(dangerous) {
-				if (dangerous) {
-					this.form.battery = true
-				}
-			},
-		}
 	}
 </script>
 
