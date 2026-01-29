@@ -178,30 +178,21 @@
 				</div>
 
 				<div class="form-group">
-					<div class="d-inline-block mr-2 mb-1">
+					<div class="d-inline-block mb-1">
 						<b-form-checkbox size="lg" v-model="form.battery" switch :disabled="isDG">
 							<small>Товар с батарейками/жидкостями/порошками/магнитами?</small>
 						</b-form-checkbox>
 					</div>
 				</div>
 
-				<div
-					v-if="form.check"
-					class="form-group"
-				>
-					<label for="form-product-image">Ссылка на фотографию товара</label>
-					<b-input-group>
-						<b-input
-							id="form-product-image"
-							v-model.trim="form.productImage"
-						/>
-						<b-input-group-append>
-							<b-button size="sm" variant="info" class="ml-1" :disabled="!form.productImage" :href="form.productImage" target="_blank">
-								<BIconEyeFill/>
-							</b-button>
-						</b-input-group-append>
-					</b-input-group>
-				</div>
+        <div class="form-group">
+          <div class="d-inline-block mr-2 mb-1">
+            <b-form-checkbox size="lg" v-model="form.originalPackage" switch>
+              <small>Оставить оригинальную упаковку?</small>
+            </b-form-checkbox>
+          </div>
+          <span class="text-success align-middle">бесплатно</span>
+        </div>
 
 				<div class="form-group">
 					<label for="form-comment" class="d-block">Комментарий к заказу</label>
@@ -214,55 +205,66 @@
 					/>
 				</div>
 
-				<b-button
-					variant="info"
-					class="mb-1"
-					:class="servicesVisible ? null : 'collapsed'"
-					@click="servicesVisible = !servicesVisible"
-				>
-					Дополнительные услуги
-					<BIconChevronUp icon="chevron-up" v-if="servicesVisible"/>
-					<BIconChevronDown icon="chevron-down" v-else />
-				</b-button>
-				<b-collapse id="services" v-model="servicesVisible">
-					<b-card no-body class="p-2">
-						<div class="form-group">
-							<div class="d-inline-block mr-2 mb-1">
-								<b-form-checkbox size="lg" v-model="form.check" switch :disabled="form.readyToShip">
-									<small>Проверка на соответствие?</small>
-								</b-form-checkbox>
-							</div>
-							<span class="text-danger align-middle">0.5$/кг</span>
-						</div>
+        <template v-if="!form.readyToShip">
+          <b-button
+            variant="info"
+            class="mb-1"
+            :class="servicesVisible ? null : 'collapsed'"
+            @click="servicesVisible = !servicesVisible"
+          >
+            Дополнительные услуги
+            <BIconChevronUp icon="chevron-up" v-if="servicesVisible"/>
+            <BIconChevronDown icon="chevron-down" v-else />
+          </b-button>
+          <b-collapse id="services" v-model="servicesVisible">
+            <b-card no-body class="p-2">
+              <div class="form-group">
+                <div class="d-inline-block mr-2 mb-1">
+                  <b-form-checkbox size="lg" v-model="form.check" switch :disabled="form.readyToShip">
+                    <small>Проверка на соответствие?</small>
+                  </b-form-checkbox>
+                </div>
+                <span class="text-danger align-middle">0.5$/кг</span>
+              </div>
 
-						<div class="form-group">
-							<div class="d-inline-block mr-2 mb-1">
-								<b-form-checkbox size="lg" v-model="form.photoReport" switch :disabled="!form.check">
-									<small>Фотоотчёт?</small>
-								</b-form-checkbox>
-							</div>
-							<span class="text-danger align-middle">1$/шт</span>
-						</div>
+              <div
+                v-if="form.check"
+                class="form-group"
+              >
+                <label for="form-product-image">Ссылка на фотографию товара</label>
+                <b-input-group>
+                  <b-input
+                    id="form-product-image"
+                    v-model.trim="form.productImage"
+                  />
+                  <b-input-group-append>
+                    <b-button size="sm" variant="info" class="ml-1" :disabled="!form.productImage" :href="form.productImage" target="_blank">
+                      <BIconEyeFill/>
+                    </b-button>
+                  </b-input-group-append>
+                </b-input-group>
+              </div>
 
-						<div class="form-group">
-							<div class="d-inline-block mr-2 mb-1">
-								<b-form-checkbox size="lg" v-model="form.originalPackage" switch>
-									<small>Оставить оригинальную упаковку?</small>
-								</b-form-checkbox>
-							</div>
-							<span class="text-success align-middle">бесплатно</span>
-						</div>
+              <div class="form-group mb-1">
+                <div class="d-inline-block mr-2 mb-1">
+                  <b-form-checkbox size="lg" v-model="form.photoReport" switch :disabled="!form.check">
+                    <small>Фотоотчёт?</small>
+                  </b-form-checkbox>
+                </div>
+                <span class="text-danger align-middle">1$/шт</span>
+              </div>
 
-						<div class="form-group">
-							<div class="d-inline-block mr-2 mb-1">
-								<b-form-checkbox size="lg" v-model="form.repack" switch :disabled="!form.readyToShip">
-									<small>Переупаковать?</small>
-								</b-form-checkbox>
-							</div>
-							<span class="text-danger align-middle">0.4$/кг</span>
-						</div>
-					</b-card>
-				</b-collapse>
+              <div class="form-group" v-if="false">
+                <div class="d-inline-block mr-2 mb-1">
+                  <b-form-checkbox size="lg" v-model="form.repack" switch :disabled="!form.readyToShip">
+                    <small>Переупаковать?</small>
+                  </b-form-checkbox>
+                </div>
+                <span class="text-danger align-middle">0.4$/кг</span>
+              </div>
+            </b-card>
+          </b-collapse>
+        </template>
 
 				<button type="submit" class="d-none" ref="submitButton" />
 			</b-form>

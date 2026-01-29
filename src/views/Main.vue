@@ -2,6 +2,20 @@
 	<div>
 		<Loader v-if="loading" />
 
+    <b-alert
+      variant="warning"
+      show
+    >
+      <div class="row">
+        <div class="col-auto pr-1">
+          ♻️
+        </div>
+        <div class="col pl-1">
+          Товары поступившие на склад в Китае хранятся 14 дней, далее будут утилизированы!
+        </div>
+      </div>
+    </b-alert>
+
 		<div class="row">
 			<div class="col-sm-auto">
 				<b-card class="order-search-form mb-3">

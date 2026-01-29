@@ -233,51 +233,54 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 				const subcategory = !!this.newOrderData
 					? this.categoriesList?.map(category => category['Подкатегории']).flat().find(subcategory => subcategory['УИДПодкатегории'] === this.newOrderData['УИДПодкатегории'])
 					: null
-				const deliveryMethods = []
-				const battery = !!this.newOrderData
+				const hasBattery = !!this.newOrderData
 					? this.newOrderData['СодержитБатареи'] || subcategory?.DG
 					: this.checkedOrders.some(order => order['СодержитБатареи'])
+        const hasBrandCopy = !!this.newOrderData && this.newOrderData['КопииBRAND']
+          || !this.newOrderData && this.checkedOrders.some(order => order['ДополнительныеУслуги'].includes('Копии BRAND'))
 
-				if (battery) {
-					deliveryMethods.push({
-						value: '000000004',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000004')['Наименование']
-					})
-					deliveryMethods.push({
-						value: '000000003',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000003')['Наименование']
-					})
-					deliveryMethods.push({
-						value: '000000009',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000009')['Наименование']
-					})
-				} else {
-					if (!!this.newOrderData && !this.newOrderData['КопииBRAND'] || !this.newOrderData && this.checkedOrders.every(order => !order['ДополнительныеУслуги'].includes('Копии BRAND'))) {
-						deliveryMethods.push({
-							value: '000000001',
-							text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000001')['Наименование']
-						})
-					}
-					deliveryMethods.push({
-						value: '000000006',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
-					})
-					deliveryMethods.push({
-						value: '000000003',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000003')['Наименование']
-					})
-					deliveryMethods.push({
-						value: '000000010',
-						text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000010')['Наименование']
-					})
-				}
+        if (hasBattery) {
+          return [
+            { // АВТО Почта
+              value: '000000003',
+              text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000003')['Наименование']
+            },
+            { // Cargo Commerce
+              value: '000000009',
+              text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000009')['Наименование']
+            },
+          ]
+        } else if (hasBrandCopy) {
+          return [
+            { // Авиа ТК Почта
+              value: '000000006',
+              text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000006')['Наименование']
+            },
+            { // АВТО Почта
+              value: '000000003',
+              text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000003')['Наименование']
+            },
+            { // Cargo commerce
+              value: '000000010',
+              text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000010')['Наименование']
+            },
+          ]
+        }
 
-				deliveryMethods.push({
-					value: '000000011',
-					text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000011')['Наименование']
-				})
-
-				return deliveryMethods
+        return [
+          { // Авиа Почта
+            value: '000000001',
+            text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000001')['Наименование']
+          },
+          { // АВТО Почта
+            value: '000000003',
+            text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000003')['Наименование']
+          },
+          { // Cargo commerce
+            value: '000000010',
+            text: this.serviceInfo['ВидыПеревозок'].find(delivery => delivery['Код'] === '000000010')['Наименование']
+          },
+        ]
 			},
 			serviceInfo() {
 				return this.$store.getters.serviceInfo
