@@ -193,9 +193,9 @@
 					</div>
 					<div>
 						<span class="h5"><b-badge class="table-orange" v-html="'&ensp;'"/></span>
-            			- Объемный вес больше фактического
+          	- Объемный вес больше фактического
 					</div>
-          			<div>
+          <div>
 						<span class="h5"><b-badge class="badge-danger" v-html="'&ensp;'"/></span>
 						- Выявленное несоответствие
 					</div>
@@ -305,6 +305,7 @@
 						try {
 							await this.$store.dispatch('deletePackage', packageId)
 							this.$toast(`Посылка ${packageId} успешно удалена!`)
+              await this.$store.dispatch('getUserInfo')
 						} catch (e) {
 							this.loading = false
 						} finally {}

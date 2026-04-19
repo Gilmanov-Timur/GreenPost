@@ -54,10 +54,6 @@
 					/>
 				</div>
 
-				<div class="alert alert-danger" v-if="!isRecipientAddressValid">
-					Обновите адрес получателя
-				</div>
-
 				<div class="form-group">
 					<label for="form-delivery-method">
 						Способ доставки
@@ -78,17 +74,80 @@
 
 				<div class="form-group">
 					<label for="form-delivery-point">
-						Доставить до
+						Куда доставить
 					</label>
-					<b-input-group>
-						<b-form-select
-							id="form-delivery-point"
-							v-model="form.deliveryPoint"
-							:options="deliveryPointOptions"
-							required
-						/>
-					</b-input-group>
+          <b-form-select
+            id="form-delivery-point"
+            v-model="form.deliveryPoint"
+            :options="deliveryPointOptions"
+            required
+          />
 				</div>
+
+        <div
+          v-if="form.deliveryPoint === 'Fillial'"
+          class="form-group"
+        >
+          <label for="filial-select">
+            Выберите филиал
+          </label>
+          <b-form-select
+            id="filial-select"
+            v-model="form.filialCode"
+            :options="filialOptions"
+            required
+          />
+          <div v-if="selectedFilialAddress" class="pt-1">
+            {{ selectedFilialAddress }}
+          </div>
+        </div>
+
+        <div
+          v-if="form.deliveryPoint === 'Taskent'"
+          class="form-group"
+        >
+          <label for="delivery-address">
+            Введите адрес
+          </label>
+          <b-input
+            id="delivery-address"
+            v-model="form.deliveryAddress"
+            required
+          />
+        </div>
+
+        <template v-if="form.deliveryPoint === 'Region'">
+          <div class="form-group">
+            <label for="region-select">
+              Выберите регион
+            </label>
+            <b-form-select
+              id="region-select"
+              v-model="form.regionCode"
+              :options="regionOptions"
+              required
+              @change="form.pickupPointCode = null"
+            />
+          </div>
+
+          <div
+            v-if="form.regionCode"
+            class="form-group"
+          >
+            <label for="pickup-point-select">
+              Выберите пункт выдачи
+            </label>
+            <b-form-select
+              id="pickup-point-select"
+              v-model="form.pickupPointCode"
+              :options="pickupPointOptions"
+              required
+            />
+            <div v-if="selectedPickupPointAddress" class="pt-1">
+              {{ selectedPickupPointAddress }}
+            </div>
+          </div>
+        </template>
 
 				<button type="submit" class="d-none" ref="submitButton" />
 			</b-form>
@@ -97,7 +156,7 @@
 			<div class="w-100">
 				<b-button
 					variant="success"
-					:disabled="!recipientOptions.length || !isRecipientPinflValid || !isRecipientAddressValid || loading"
+					:disabled="!recipientOptions.length || !isRecipientPinflValid || loading"
 					@click.prevent="onSave"
 				>
 					Оформить
@@ -118,6 +177,10 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 					recipientId: null,
 					deliveryPoint: null,
 					deliveryMethod: null,
+          filialCode: null,
+          deliveryAddress: null,
+          regionCode: null,
+          pickupPointCode: null,
 				},
 				recipientOptions: [],
 			}
@@ -135,10 +198,14 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 				await this.$store.dispatch('cancelRequest')
 			},
 			resetForm() {
-				this.form.recipientId = null
-				this.recipientOptions = []
-				this.form.deliveryPoint = this.deliveryPointOptions[0].value
-				this.form.deliveryMethod = this.deliveryMethodOptions[0].value
+				this.form.recipientId = null;
+				this.recipientOptions = [];
+				this.form.deliveryPoint = this.deliveryPointOptions[0].value;
+				this.form.deliveryMethod = this.deliveryMethodOptions[0].value;
+        this.form.filialCode = null;
+        this.form.deliveryAddress = null;
+        this.form.regionCode = null;
+        this.form.pickupPointCode = null;
 			},
 			async getRecipients() {
 				this.loading = true
@@ -147,12 +214,9 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 					const recipients = await this.$store.dispatch('getRecipients')
 					this.recipients = recipients
 					this.recipientOptions = recipients.map(recipient => {
-						const isValid = !!recipient['Район']
 						return {
 							value: recipient['Номер'],
-							text: isValid
-								? `${recipient['ФИО']}, ${recipient['Область']}, ${recipient['Район']}, ${recipient['Город'] ? (recipient['Город'] + ', ') : ''}${recipient['Улица']}, ${recipient['Дом']}${recipient['Квартира'] ? ('-' + recipient['Квартира']) : ''}`
-								: `${recipient['ФИО']}, [Обновите адрес]`
+							text: recipient['ФИО']
 						}
 					})
 					if (!this.form.recipientId) {
@@ -176,9 +240,19 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 					"НомерПолучателя": this.form.recipientId,
 					'НомерСклада': '000000001',
 					'НомерВидаПеревозок': this.form.deliveryMethod,
-					'НомерУслугиПосылки': this.form.deliveryPoint,
 					'НомераЗаказов': this.checkedOrders?.map(order => order['Номер']) || ''
 				}
+
+        if (this.form.deliveryPoint === 'Taskent') {
+          formData['НомерУслугиПосылки'] = this.deliveryPoints?.Taskent.code;
+          formData['АдресПосылки'] = this.form.deliveryAddress?.trim();
+        } else if (this.form.deliveryPoint === 'Region') {
+          formData['НомерУслугиПосылки'] = this.form.pickupPointCode;
+          formData['АдресПосылки'] = this.selectedPickupPointAddress?.trim();
+        } else {
+          formData['НомерУслугиПосылки'] = this.form.filialCode;
+          formData['АдресПосылки'] = this.selectedFilialAddress?.trim();
+        }
 
 				this.loading = true
 
@@ -188,11 +262,11 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 							'ФИО': this.selectedRecipient['ФИО'],
 							'НомерПолучателя': this.selectedRecipient['Номер'],
 							'НомерСтраны': '000000001',
-							'Область': this.selectedRecipient['Область'],
-							'Город': this.selectedRecipient['Город'],
-							'Улица': this.selectedRecipient['Улица'],
-							'Дом': this.selectedRecipient['Дом'],
-							'Квартира': this.selectedRecipient['Квартира'] || '',
+							// 'Область': this.selectedRecipient['Область'],
+							// 'Город': this.selectedRecipient['Город'],
+							// 'Улица': this.selectedRecipient['Улица'],
+							// 'Дом': this.selectedRecipient['Дом'],
+							// 'Квартира': this.selectedRecipient['Квартира'] || '',
 							'Телефон': this.selectedRecipient['Телефон'],
 							'СерияНомерПаспорта': this.selectedRecipient['СерияНомерПаспорта'],
 							'ПИНФЛ': this.selectedRecipient['ПИНФЛ'],
@@ -229,6 +303,9 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 			categoriesList() {
 				return this.$store.getters.categoriesList
 			},
+      deliveryPoints() {
+        return this.$store.getters.deliveryPoints
+      },
 			deliveryMethodOptions() {
 				const subcategory = !!this.newOrderData
 					? this.categoriesList?.map(category => category['Подкатегории']).flat().find(subcategory => subcategory['УИДПодкатегории'] === this.newOrderData['УИДПодкатегории'])
@@ -296,30 +373,48 @@ import { isPinflCorrect, getBirthdateFromPinfl } from '@/utils/functions'
 					return true
 				}
 			},
-			isRecipientAddressValid() {
-				if (this.recipients.length && this.form.recipientId) {
-					return !!this.selectedRecipient['Район']
-				} else {
-					return true
-				}
-			},
 			deliveryPointOptions() {
-				const validCodes = ['000000001', '000000008', '000000009', '000000003', '000000004'];
-				const filteredPoints = [];
-
-				validCodes.forEach(code => {
-					const point = this.serviceInfo?.['УслугиПосылок'].find(service => service['Код'] === code)
-
-					if (point) {
-						filteredPoints.push({
-							value: point['Код'],
-							text: point['Наименование']
-						})
-					}
-				});
-
-				return filteredPoints;
+				return [
+          {
+            text: 'До филиала',
+            value: 'Fillial',
+          },
+          {
+            text: 'По адресу г. Ташкент',
+            value: 'Taskent',
+          },
+          {
+            text: 'По областям Узбекистана',
+            value: 'Region',
+          },
+        ];
 			},
+      filialOptions() {
+        return this.deliveryPoints?.Fillial.map(filial => ({
+          text: filial.name,
+          value: filial.code
+        })) || []
+      },
+      selectedFilialAddress() {
+        return this.deliveryPoints?.Fillial.find(filial => filial.code === this.form.filialCode)?.address
+      },
+      regionOptions() {
+        return this.deliveryPoints?.Region.map(filial => ({
+          text: filial.name,
+          value: filial.code
+        })) || []
+      },
+      pickupPointOptions() {
+        const pickupPoints = this.deliveryPoints?.Region.find(region => region.code === this.form.regionCode)?.data
+
+        return pickupPoints?.map(point => ({
+          text: point.name,
+          value: point.code
+        })) || []
+      },
+      selectedPickupPointAddress() {
+        return this.deliveryPoints?.Region.map(region => region.data).flat().find(point => point.code === this.form.pickupPointCode)?.address
+      }
 		},
 		watch: {
 			timestamp: function () {

@@ -15,7 +15,7 @@
 			>
 				<div class="d-flex flex-column h-100 py-3">
 					<div class="mb-3 text-center px-3">
-						<b-dropdown variant="dark">
+						<b-dropdown variant="dark" class="mb-2">
 							<template v-slot:button-content>
 								<div class="user-avatar">
 									<b-avatar round />
@@ -24,14 +24,8 @@
 									{{ userInfo['Фамилия'] }}
 									{{ userInfo['Имя'] }}
 								</div>
-								<div class="user-id mb-1 text-white">
-									ID: {{ userInfo.ID }}
-								</div>
 								<span class="text-white">
-									{{ $t('balance') }}:
-									<span :class="{'text-danger': balance < 0, 'text-success': balance > 0}">
-										{{balance}}
-									</span>$
+									ID: {{ userInfo.ID }}
 								</span>
 							</template>
 							<b-dropdown-item-button @click.prevent="$bvModal.show('modal-profile')">
@@ -44,9 +38,26 @@
 								{{ $t('exit') }}
 							</b-dropdown-item-button>
 						</b-dropdown>
+
+            <div class="text-white">
+              {{ $t('balance') }}:
+              <span :class="{'text-danger': balance < 0, 'text-success': balance > 0}">
+                {{balance}}
+              </span>$
+            </div>
+
+            <b-button
+              v-if="balance < 0"
+              variant="info"
+              size="sm"
+              class="mt-2"
+              :to="{ name: 'cabinetPackages', query: { selectUnpaid: null } }"
+            >
+              Пополнить баланс
+            </b-button>
 					</div>
 
-					<b-nav vertical class="cabinet-nav">
+					<b-nav vertical class="cabinet-nav pb-5 pb-sm-0">
 						<b-nav-item to="/" active-class="active" exact>
 							<BIconHouseDoor/> {{ $t('main') }}
 						</b-nav-item>
@@ -155,21 +166,17 @@
 			}
 		},
 		async mounted() {
-			const promises = []
+			const promises = [
+        this.$store.dispatch('getServiceInfo'),
+        this.$store.dispatch('getDeliveryPoints'),
+        this.$store.dispatch('getCurrencyCourse'),
+        this.$store.dispatch('getCategoriesList'),
+        this.$store.dispatch('getSkuList')
+      ]
 
 			this.$nextTick(() => {
 				window.addEventListener('resize', this.onResize);
 			})
-
-			promises.push(
-				this.$store.dispatch('getServiceInfo')
-			)
-			promises.push(
-				this.$store.dispatch('getCategoriesList')
-			)
-			promises.push(
-				this.$store.dispatch('getSkuList')
-			)
 
 			if (!this.userInfo) {
 				promises.push(

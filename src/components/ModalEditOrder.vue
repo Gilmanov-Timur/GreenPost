@@ -533,7 +533,6 @@
 				}));
 
 				this.unwatchers.push(this.$watch('form.productCode', function(productCode) {
-					console.log(productCode)
 					const product = this.skuList.find(product => product['УИДТовара'] === productCode)
 
 					if (!product) {

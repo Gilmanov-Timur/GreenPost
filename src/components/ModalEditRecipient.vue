@@ -90,6 +90,7 @@
 					</div>
 				</div>
 
+        <!--
 				<div class="form-row form-group">
 					<label for="form-region" class="col-5 col-form-label">
 						Регион <span class="text-danger">*</span>
@@ -162,8 +163,9 @@
 						<b-input id="form-flat" v-model.trim="form.flat" />
 					</div>
 				</div>
+				-->
 
-				<div class="mb-4"><span class="text-danger">*</span> - поля обязательные для заполнения</div>
+				<div class=""><span class="text-danger">*</span> - поля обязательные для заполнения</div>
 
 				<button type="submit" class="d-none" ref="submitButton" />
 			</b-form>

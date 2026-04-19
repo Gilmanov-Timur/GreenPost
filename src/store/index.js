@@ -17,6 +17,8 @@ export default new Vuex.Store({
 		skuList: null,
 		error: null,
 		toast: null,
+		deliveryPoints: null,
+		currencyCourse: 0,
 	},
 	actions: {
 		async getNotifications({commit}) {
@@ -67,6 +69,26 @@ export default new Vuex.Store({
 				throw e
 			}
 		},
+		async getDeliveryPoints({commit}) {
+			try {
+				const response = await api.getDeliveryPoints()
+				commit('setDeliveryPoints', response.data)
+				return response.data
+			} catch (e) {
+				commit('setError', e)
+				throw e
+			}
+		},
+		async getCurrencyCourse({commit}) {
+			try {
+				const response = await api.getCurrencyCourse()
+				commit('setCurrencyCourse', response.data.Course)
+				return response.data
+			} catch (e) {
+				commit('setError', e)
+				throw e
+			}
+		},
 		setError({commit}, error) {
 			commit('setError', error)
 		},
@@ -84,6 +106,12 @@ export default new Vuex.Store({
 		setServiceInfo(state, info) {
 			//const deliveryMethods = info['ВидыПеревозок']
 			state.serviceInfo = info
+		},
+		setDeliveryPoints(state, points) {
+			state.deliveryPoints = points
+		},
+		setCurrencyCourse(state, course) {
+			state.currencyCourse = course
 		},
 		setCategoriesList(state, categories) {
 			state.categoriesList = categories
@@ -118,6 +146,8 @@ export default new Vuex.Store({
 	},
 	getters: {
 		serviceInfo: state => state.serviceInfo,
+		deliveryPoints: state => state.deliveryPoints,
+		currencyCourse: state => state.currencyCourse,
 		categoriesList: state => state.categoriesList,
 		skuList: state => state.skuList,
 		error: state => state.error,

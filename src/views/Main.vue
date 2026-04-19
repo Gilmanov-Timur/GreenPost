@@ -4,27 +4,21 @@
 
     <b-alert
       variant="warning"
+      class="px-2 px-sm-3"
       show
     >
-      <div class="row">
-        <div class="col-auto pr-1">
-          ♻️
-        </div>
-        <div class="col pl-1">
-          Товары поступившие на склад в Китае хранятся 14 дней, далее будут утилизированы!
-        </div>
-      </div>
+      Товары поступившие на склад в Китае хранятся 14 дней, далее будут утилизированы!
     </b-alert>
 
 		<div class="row">
-			<div class="col-sm-auto">
+			<div class="col-12">
 				<b-card class="order-search-form mb-3">
 					<template v-slot:header>
-						<div class="h3 mb-0">
+            <div class="h4 mb-0 mx-n2 mx-sm-0">
 							{{ $t('track-order') }}
 						</div>
 					</template>
-					<b-card-text>
+          <b-card-text class="mx-n2 mx-sm-0" style="font-size: 14px;">
 						<b-form @submit.prevent="onSubmit">
 							<div class="form-group mb-0">
 								<b-input-group>
@@ -39,67 +33,82 @@
 						</b-form>
 					</b-card-text>
 				</b-card>
+
+        <div v-if="searched">
+          <div class="table-responsive" v-if="orders.length">
+            <table class="table table-bordered">
+              <tr class="table-info">
+                <th class="align-middle">{{ $t('date') }}</th>
+                <th class="align-middle">{{ $t('product-name') }}</th>
+                <th class="align-middle">{{ $t('tracking-number') }}</th>
+                <th class="align-middle">{{ $t('warehouse-receive') }}</th>
+                <th class="align-middle">{{ $t('status') }}</th>
+                <th class="align-middle">{{ $t('package') }}</th>
+              </tr>
+              <tr v-for="order of orders" :key="order['Номер']">
+                <td class="align-middle">
+                  {{ order['Дата'] }}
+                </td>
+                <td class="align-middle">
+                  {{ order['ВидТовара'] }}
+                </td>
+                <td class="align-middle">
+                  {{ order['ТрекПоступления'] }}
+                </td>
+                <td class="align-middle">
+                  {{ order['ПоступилНаСклад'] }}
+                </td>
+                <td class="align-middle">
+                  {{ order['Статус'] }}
+                </td>
+                <td class="align-middle">
+                  {{ order['Посылка'] }}
+                </td>
+              </tr>
+            </table>
+          </div>
+          <b-alert show variant="warning" class="d-inline-block" v-else>
+            {{ $t('order-not-found') }}
+          </b-alert>
+        </div>
 			</div>
-			<div class="col-auto">
+			<div class="col-12">
 				<b-card class="mb-3">
 					<template v-slot:header>
-						<div class="h3 mb-0">{{ $t('your-china-address') }}</div>
+						<div class="h4 mb-0 mx-n2 mx-sm-0">
+              {{ $t('your-china-address') }}
+            </div>
 					</template>
-					<b-card-text>
-						<div>
-							<b>地址:</b> 广州市天河区龙洞街道龙湖山庄3巷6号首层 ID:{{ userInfo['ID'] }}
+					<b-card-text class="mx-n2 mx-sm-0" style="font-size: 14px;">
+						<div class="mb-1">
+							<b>地址:</b> 广州市天河区龙洞商贸城自编V108号 ID:{{ userInfo['ID'] }}
 						</div>
-						<div>
+						<div class="mb-1">
 							<b>收货人:</b> ID:{{ userInfo['ID'] }}
 						</div>
-						<div>
+						<div class="mb-1">
 							<b>邮政编码:</b> 510520
 						</div>
 						<div>
-							<b>手机号:</b> 17728037238
+							<b>手机号:</b> 15989014545
 						</div>
 					</b-card-text>
 				</b-card>
 			</div>
 		</div>
 
-		<div v-if="searched">
-			<div class="table-responsive" v-if="orders.length">
-				<table class="table table-bordered">
-					<tr class="table-info">
-						<th class="align-middle">{{ $t('date') }}</th>
-						<th class="align-middle">{{ $t('product-name') }}</th>
-						<th class="align-middle">{{ $t('tracking-number') }}</th>
-						<th class="align-middle">{{ $t('warehouse-receive') }}</th>
-						<th class="align-middle">{{ $t('status') }}</th>
-						<th class="align-middle">{{ $t('package') }}</th>
-					</tr>
-					<tr v-for="order of orders" :key="order['Номер']">
-						<td class="align-middle">
-							{{ order['Дата'] }}
-						</td>
-						<td class="align-middle">
-							{{ order['ВидТовара'] }}
-						</td>
-						<td class="align-middle">
-							{{ order['ТрекПоступления'] }}
-						</td>
-						<td class="align-middle">
-							{{ order['ПоступилНаСклад'] }}
-						</td>
-						<td class="align-middle">
-							{{ order['Статус'] }}
-						</td>
-						<td class="align-middle">
-							{{ order['Посылка'] }}
-						</td>
-					</tr>
-				</table>
-			</div>
-			<b-alert show variant="warning" class="d-inline-block" v-else>
-				{{ $t('order-not-found') }}
-			</b-alert>
-		</div>
+    <b-alert show class="px-2 px-sm-3">
+      <pre style="white-space: pre-line; font-size: 100%;" class="m-0">
+❗️ После добавления адреса на маркетплейс просим связаться с нами для проверки!
+✈️ Авиа 3-7 дней - 9,5$/кг (Отправка: Вторник, Пятница)
+🚛 Авто 20-30 дней - 5,5$/кг (Отправка: Суббота)
+📦 Минималка 100 грамм
+⚠️ Товары содержащие батарейки, жидкости, порошки, магниты, косметику и продукты питания можно отправлять только Авто.
+📍 Наши филиалы: Мирабад, Чиланзар, Алмазар, Юнусабад, Мирзо-Улугбек, Яшнабад
+🚚 Доставка по Узбекистану - 2 долл/шт посылку (0,1кг - 30 кг)
+💰 Габаритные и коммерческие товары тарифицируются отдельно!
+🔗 Более подробная информация на сайте <a href="https://greenpost.uz" target="_blank">Greenpost.uz</a></pre>
+    </b-alert>
 	</div>
 </template>
 
