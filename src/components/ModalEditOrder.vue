@@ -17,14 +17,14 @@
 		<template v-slot:default>
 			<Loader v-if="loading" />
 			<b-form @submit.prevent="onSubmit" ref="form">
-				<div class="form-group px-3 py-2 border border-info rounded-pill">
-					<div class="d-inline-block mr-2 mb-1">
-						<b-form-checkbox size="lg" v-model="form.readyToShip" switch>
-							<small>Отправить в один клик</small>
-						</b-form-checkbox>
-					</div>
-					<BIconQuestionCircle class="my-1 align-middle" v-b-tooltip.hover="`Активируйте флажок, если желаете при поступлении товара незамедлительно переслать посылку на Ваш адрес, без возможности объединить ее с другими товарами и без проверки вложения.`" />
-				</div>
+<!--				<div class="form-group px-3 py-2 border border-info rounded-pill">-->
+<!--					<div class="d-inline-block mr-2 mb-1">-->
+<!--						<b-form-checkbox size="lg" v-model="form.readyToShip" switch>-->
+<!--							<small>Отправить в один клик</small>-->
+<!--						</b-form-checkbox>-->
+<!--					</div>-->
+<!--					<BIconQuestionCircle class="my-1 align-middle" v-b-tooltip.hover="`Активируйте флажок, если желаете при поступлении товара незамедлительно переслать посылку на Ваш адрес, без возможности объединить ее с другими товарами и без проверки вложения.`" />-->
+<!--				</div>-->
 
 				<div class="form-row form-group mb-1 mb-sm-3">
 					<label class="col-sm-6 col-form-label">
@@ -168,6 +168,15 @@
 					</div>
 				</div>
 
+        <div class="form-group">
+          <div class="d-inline-block mr-2 mb-1">
+            <b-form-checkbox size="lg" v-model="form.photoReport" switch>
+              <small>Фотоотчёт</small>
+            </b-form-checkbox>
+          </div>
+          <span class="text-danger align-middle">1$/шт</span>
+        </div>
+
 				<div class="form-group">
 					<div class="d-inline-block mr-2 mb-1">
 						<b-form-checkbox size="lg" v-model="form.brand" switch>
@@ -205,7 +214,7 @@
 					/>
 				</div>
 
-        <template v-if="!form.readyToShip">
+        <template v-if="false">
           <b-button
             variant="info"
             class="mb-1"
@@ -218,41 +227,32 @@
           </b-button>
           <b-collapse id="services" v-model="servicesVisible">
             <b-card no-body class="p-2">
-              <div class="form-group">
-                <div class="d-inline-block mr-2 mb-1">
-                  <b-form-checkbox size="lg" v-model="form.check" switch :disabled="form.readyToShip">
-                    <small>Проверка на соответствие?</small>
-                  </b-form-checkbox>
-                </div>
-                <span class="text-danger align-middle">0.5$/кг</span>
-              </div>
+<!--              <div class="form-group">-->
+<!--                <div class="d-inline-block mr-2 mb-1">-->
+<!--                  <b-form-checkbox size="lg" v-model="form.check" switch :disabled="form.readyToShip">-->
+<!--                    <small>Проверка на соответствие?</small>-->
+<!--                  </b-form-checkbox>-->
+<!--                </div>-->
+<!--                <span class="text-danger align-middle">0.5$/кг</span>-->
+<!--              </div>-->
 
-              <div
-                v-if="form.check"
-                class="form-group"
-              >
-                <label for="form-product-image">Ссылка на фотографию товара</label>
-                <b-input-group>
-                  <b-input
-                    id="form-product-image"
-                    v-model.trim="form.productImage"
-                  />
-                  <b-input-group-append>
-                    <b-button size="sm" variant="info" class="ml-1" :disabled="!form.productImage" :href="form.productImage" target="_blank">
-                      <BIconEyeFill/>
-                    </b-button>
-                  </b-input-group-append>
-                </b-input-group>
-              </div>
-
-              <div class="form-group mb-1">
-                <div class="d-inline-block mr-2 mb-1">
-                  <b-form-checkbox size="lg" v-model="form.photoReport" switch :disabled="!form.check">
-                    <small>Фотоотчёт?</small>
-                  </b-form-checkbox>
-                </div>
-                <span class="text-danger align-middle">1$/шт</span>
-              </div>
+<!--              <div-->
+<!--                v-if="form.check"-->
+<!--                class="form-group"-->
+<!--              >-->
+<!--                <label for="form-product-image">Ссылка на фотографию товара</label>-->
+<!--                <b-input-group>-->
+<!--                  <b-input-->
+<!--                    id="form-product-image"-->
+<!--                    v-model.trim="form.productImage"-->
+<!--                  />-->
+<!--                  <b-input-group-append>-->
+<!--                    <b-button size="sm" variant="info" class="ml-1" :disabled="!form.productImage" :href="form.productImage" target="_blank">-->
+<!--                      <BIconEyeFill/>-->
+<!--                    </b-button>-->
+<!--                  </b-input-group-append>-->
+<!--                </b-input-group>-->
+<!--              </div>-->
 
               <div class="form-group" v-if="false">
                 <div class="d-inline-block mr-2 mb-1">
@@ -357,7 +357,8 @@
 					this.form.check = !!options.check
 					this.form.photoReport = !!options.photoReport
 					this.form.originalPackage = !!options.originalPackage
-					this.form.readyToShip = response['ОтправитьСразу']
+					//this.form.readyToShip = response['ОтправитьСразу']
+					this.form.readyToShip = true
 					this.form.repack = !!options.repack
 
 					if (response['УИДПодкатегории']) {
@@ -554,9 +555,9 @@
 					}
 
 					if (this.productsWithSim.includes(productCode)) {
-						this.form.readyToShip = false;
-						this.servicesVisible = true;
-						this.form.check = true;
+						//this.form.readyToShip = false;
+						//this.servicesVisible = true;
+						//this.form.check = true;
 						this.form.photoReport = true;
 					}
 				}));

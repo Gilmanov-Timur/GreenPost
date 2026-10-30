@@ -18,6 +18,7 @@
 				<tr class="table-info">
 					<th>#</th>
 					<th>ФИО</th>
+					<th>Лимит в месяц</th>
 					<th>Серия и номер паспорта</th>
 					<th>ПИНФЛ</th>
 					<th>Номер телефона</th>
@@ -26,6 +27,15 @@
 				<tr v-for="(recipient, index) of recipients" :key="recipient['Номер']">
 					<td>{{ index + 1 }}</td>
 					<td>{{recipient['ФИО']}}</td>
+					<td>
+            <span
+              :class="{
+                'text-danger': recipient['СуммаЗаМесяц'] >= recipient['ЛимитВМесяц']
+              }"
+            >
+              ${{recipient['СуммаЗаМесяц']}} / ${{recipient['ЛимитВМесяц']}}
+            </span>
+          </td>
 					<td>{{recipient['СерияНомерПаспорта']}}</td>
 					<td>{{recipient['ПИНФЛ']}}</td>
 					<td>{{recipient['Телефон']}}</td>
